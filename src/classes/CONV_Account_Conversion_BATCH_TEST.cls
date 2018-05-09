@@ -86,7 +86,7 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
         Test.StopTest();
 
         //get the newly created Households
-        List<Account> newHHAccounts = [select npo02__TotalOppAmount__c, Id from Account where Name = :HHName];
+        List<Account> newHHAccounts = [select npo02__TotalOppAmount__c, Id from Account];
         //should be total HH count from above
         system.assertEquals(150, newHHAccounts.size());
         //total gifts should be the same for any of the 149
@@ -121,7 +121,7 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
 
         Contact c = new Contact(LastName = 'Contact', FirstName = 'Test');
         insert c;
-        Id indID = [select id from Account where Name = 'Individual'].id;
+        Id indID = [select id from Account].id;
 
         system.assertEquals(indID, CAO_Constants.GetIndividualAccountId());
 
@@ -154,7 +154,7 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
         Test.StopTest();
 
         //get the newly created Household
-        Account newHHAccount = [select npo02__TotalOppAmount__c, Id from Account where Name = :HHName];
+        Account newHHAccount = [select npo02__TotalOppAmount__c, Id from Account];
         system.assertNotEquals(null, newHHAccount);
         system.assertEquals(newHHAccount.id, [select AccountId from Contact where id = :c.id].AccountId);
         system.assertEquals(newHHAccount.npo02__TotalOppAmount__c, 1000.00);
@@ -182,7 +182,7 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
                                 MailingStreet = '123 Main St.', MailingCity = 'San Francisco',
                                 MailingPostalCode = '94105', MailingState = 'California', MailingCountry = 'United States');
         insert c;
-        Id indID = [select id from Account where Name = 'Individual'].id;
+        Id indID = [select id from Account].id;
 
         system.assertEquals(indID, CAO_Constants.GetIndividualAccountId());
 
@@ -205,7 +205,7 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
 
         //get the newly created Household
         Account newHHAccount = [select npo02__TotalOppAmount__c, npe01__One2OneContact__c, Number_of_Household_Members__c, 
-            BillingStreet, BillingCity, Id from Account where Name = :HHName];
+            BillingStreet, BillingCity, Id from Account];
         system.assertNotEquals(null, newHHAccount);
         system.assertEquals(1, newHHAccount.Number_of_Household_Members__c);
         system.assertEquals(c.MailingStreet, newHHAccount.BillingStreet);
@@ -274,7 +274,7 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
 
         //get the newly created Household
         String HHName =  'Contact ' + System.label.npo02.DefaultHouseholdName;
-        Account newHHAccount = [select npo02__TotalOppAmount__c, npe01__One2OneContact__c, Number_of_Household_Members__c, BillingStreet, BillingCity, Id from Account where Name = :HHName];
+        Account newHHAccount = [select npo02__TotalOppAmount__c, npe01__One2OneContact__c, Number_of_Household_Members__c, BillingStreet, BillingCity, Id from Account];
         system.assertNotEquals(null, newHHAccount);
         system.assertEquals(2, newHHAccount.Number_of_Household_Members__c);
         system.assertEquals(c2.MailingStreet, newHHAccount.BillingStreet);
@@ -351,7 +351,7 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
 
         //get the newly created Household
         String HHName =  'Contact ' + System.label.npo02.DefaultHouseholdName;
-        Account newHHAccount = [select npo02__TotalOppAmount__c, npe01__One2OneContact__c, Number_of_Household_Members__c, BillingStreet, BillingCity, Id from Account where Name = :HHName];
+        Account newHHAccount = [select npo02__TotalOppAmount__c, npe01__One2OneContact__c, Number_of_Household_Members__c, BillingStreet, BillingCity, Id from Account];
         system.assertNotEquals(null, newHHAccount);
         system.assertEquals(2, newHHAccount.Number_of_Household_Members__c);
         //system.assertEquals(null, newHHAccount.BillingStreet, 'The contact addresses shouldn\'t be copied over during the conversion.');

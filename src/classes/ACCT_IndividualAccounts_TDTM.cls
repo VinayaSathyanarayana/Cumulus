@@ -460,7 +460,7 @@ public class ACCT_IndividualAccounts_TDTM extends TDTM_Runnable {
     {
         //grab the first Account that is named Individual
         // SHIELD ACCOUNT NAME FILTER
-        List<Account> individuals = [Select Id from Account where name = :CAO_Constants.BUCKET_ACCOUNT_NAME ORDER BY CreatedDate Desc Limit 1];
+        List<Account> individuals = [Select Id from Account ORDER BY CreatedDate Desc Limit 1];
         
         Id individualAccountId = CAO_Constants.GetIndividualAccountId();
         

@@ -1613,7 +1613,7 @@ public with sharing class ADDR_Addresses_TEST2 {
         Test.stopTest();
 
         // verify results
-        acc = [select Id, Name, BillingStreet from Account where Name like '%Testy%'];
+        acc = [select Id, Name, BillingStreet from Account];
         list<Address__c> listAddr = [select Id, Default_Address__c, MailingStreet__c from Address__c];
         system.assertEquals(1, listAddr.size());
         con = [select Id, Lastname, MailingStreet, Current_Address__c from Contact];
