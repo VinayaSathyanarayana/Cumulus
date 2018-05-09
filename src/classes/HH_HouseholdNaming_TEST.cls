@@ -146,7 +146,7 @@ public class HH_HouseholdNaming_TEST {
         HH_HouseholdNaming.FutureUpdateNames(householdids);
         test.stoptest();
         //test a single member household, lastname, firstname, householdname:
-        Contact con = [select npo02__Household__r.Name, npo02__Household__r.npo02__Informal_Greeting__c, npo02__Household__r.npo02__Formal_Greeting__c from Contact];
+        Contact con = [select npo02__Household__r.Name, npo02__Household__r.npo02__Informal_Greeting__c, npo02__Household__r.npo02__Formal_Greeting__c from Contact where FirstName = 'FirstName0'];
         system.assertEquals('LastName0 ' +  system.label.npo02.DefaultHouseholdName, con.npo02__household__r.Name);  
         system.assertEquals('FirstName0',con.npo02__household__r.npo02__Informal_Greeting__c);
         system.assertEquals('Mr. FirstName0 LastName0', con.npo02__household__r.npo02__Formal_Greeting__c);
