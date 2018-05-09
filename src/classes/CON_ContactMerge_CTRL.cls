@@ -604,7 +604,7 @@ public with sharing class CON_ContactMerge_CTRL {
     */
     public List<List<SObject>> mySOSL() {
         searchResults.clear();    
-        
+        // SHIELD FILTER AND SORT CONTACT NAME
         //build the SOSL query and execute - NOTE: * wildcard will only have effect at the middle or end of the search term
         String searchquery = 'FIND \'' + String.escapeSingleQuotes(searchText) + 
             '*\' IN ALL FIELDS RETURNING Contact(';

@@ -58,7 +58,7 @@ public with sharing class UTIL_SoqlListView_CTRL {
                     SortItemField = pageController.getstrNameField();
                     SortItemAsc = true;                 
                 }
-
+                // SHIELD ORDER BY DYNAMIC OBJECT AND FIELD
                 if (SortItemField != null) {
                     strSoql += ' ORDER BY ' + SortItemField + (SortItemAsc ? ' ASC' : ' DESC');
                 }

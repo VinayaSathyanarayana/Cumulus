@@ -276,7 +276,7 @@ public with sharing class RLLP_OppRollup_TEST2 {
 
             Contact c = [SELECT Id,npo02__Total_Household_Gifts__c,npo02__OppAmountThisYearHH__c,npo02__OppAmountLastYearHH__c,
                             npo02__LastCloseDateHH__c, npo02__Best_Gift_Year__c, npo02__Best_Gift_Year_Total__c, npo02__Household__r.npo02__Best_Gift_Year__c, npo02__Household__r.npo02__Best_Gift_Year_Total__c
-                FROM Contact WHERE LastName=:CAO_Constants.CONTACT_LASTNAME_FOR_TESTS AND FirstName=:CAO_Constants.CONTACT_FIRSTNAME_FOR_TESTS+'second' LIMIT 1];
+                FROM Contact LIMIT 1];
             System.assertEquals (375,c.npo02__Total_Household_Gifts__c);
             System.assertEquals (100,c.npo02__OppAmountThisYearHH__c);
             System.assertEquals (0,c.npo02__OppAmountLastYearHH__c);

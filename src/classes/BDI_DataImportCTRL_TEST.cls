@@ -83,11 +83,11 @@ private with sharing class BDI_DataImportCTRL_TEST {
         system.assertNotEquals(null, ctrl.close());
 
         // verify expected results
-        list<Contact> listCon = [select Id, Name from Contact order by Name];
+        list<Contact> listCon = [select Id, Name from Contact];
         system.assertEquals(4, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
 
-        list<Account> listAcc = [select Id, Name from Account order by Name];
+        list<Account> listAcc = [select Id, Name from Account];
         system.assertEquals(3, listAcc.size());
 
         list<Opportunity> listOpp = [select Id, Name, Amount, AccountId from Opportunity order by Name];
@@ -157,10 +157,10 @@ private with sharing class BDI_DataImportCTRL_TEST {
         system.assertNotEquals(null, ctrl.close());
 
         // verify expected results
-        list<Contact> listCon = [select Id, Name from Contact order by Name];
+        list<Contact> listCon = [select Id, Name from Contact];
         system.assertEquals(0, listCon.size());
 
-        list<Account> listAcc = [select Id, Name from Account order by Name];
+        list<Account> listAcc = [select Id, Name from Account];
         system.assertEquals(0, listAcc.size());
 
         list<Opportunity> listOpp = [select Id, Name, Amount, AccountId from Opportunity order by Name];

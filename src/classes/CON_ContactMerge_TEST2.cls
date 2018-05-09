@@ -745,7 +745,7 @@ private class CON_ContactMerge_TEST2 {
             from Account order by Id]);
         list<Contact> listCon = [select Id, Firstname, Lastname, AccountId, 
             is_Address_Override__c, Current_Address__c, MailingStreet, MailingCity, MailingState, MailingPostalCode, MailingCountry 
-            from Contact order by Firstname];
+            from Contact];
             
         // verify the contacts belong to correct account.
         iConLoserSibling--;

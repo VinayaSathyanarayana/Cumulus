@@ -130,7 +130,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name from Contact];
         system.assertEquals(2, listCon.size());
         system.assertNotEquals(listCon[1].Name, listCon[0].Name);
 
@@ -238,13 +238,13 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, AccountId from Contact];
         system.assertEquals(2, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);
         
         // verify only one household account
-        list<Account> listAcc = [select Id, Name from Account order by Name desc];
+        list<Account> listAcc = [select Id, Name from Account];
         // because c2 is first created as a contact1, it will get a hh account, that will
         // later get orphaned when we move c2 to c1's hh account.
         system.assertEquals(2, listAcc.size());
@@ -292,7 +292,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name from Contact];
         system.assertEquals(2, listCon.size());
         system.assertNotEquals(listCon[1].Name, listCon[0].Name);
         
@@ -337,7 +337,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name from Contact];
         system.assertEquals(1, listCon.size());
         system.assertEquals('TestFirstname00 TestLastname00', listCon[0].Name);
         
@@ -373,7 +373,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Account> listAcc = [select Id, Name from Account order by Name];
+        list<Account> listAcc = [select Id, Name from Account];
         system.assertEquals(2, listAcc.size());
         system.assertNotEquals(listAcc[1].Name, listAcc[0].Name);
 
@@ -405,7 +405,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Account> listAcc = [select Id, Name from Account order by Name];
+        list<Account> listAcc = [select Id, Name from Account];
         system.assertEquals(1, listAcc.size());
 
         listDI = [select Account1Imported__c, Account1ImportStatus__c, Account2Imported__c, Account2ImportStatus__c from DataImport__c];
@@ -437,7 +437,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Account> listAcc = [select Id, Name from Account order by Name];
+        list<Account> listAcc = [select Id, Name from Account];
         system.assertEquals(1, listAcc.size());
 
         listDI = [select Account1Imported__c, Account1ImportStatus__c, Account2Imported__c, Account2ImportStatus__c from DataImport__c order by Account1ImportStatus__c];
@@ -474,7 +474,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        listAcc = [select Id, Name from Account order by Name];
+        listAcc = [select Id, Name from Account];
         system.assertEquals(2, listAcc.size());
 
         listDI = [select Account1Imported__c, Account1ImportStatus__c, Account2Imported__c, Account2ImportStatus__c from DataImport__c order by Id];
@@ -516,7 +516,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        listAcc = [select Id, Name from Account where Type != 'Household' order by Name];
+        listAcc = [select Id, Name from Account where Type != 'Household'];
         system.assertEquals(2, listAcc.size());
 
         listDI = [select Account1Imported__c, Account1ImportStatus__c, Account2Imported__c, Account2ImportStatus__c from DataImport__c order by Contact1_Lastname__c];
@@ -558,7 +558,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, Email from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, Email from Contact];
         system.assertEquals(3, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c1@home.com', listCon[0].Email);
@@ -597,7 +597,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId, Primary_Affiliation__c from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, AccountId, Primary_Affiliation__c from Contact];
         system.assertEquals(4, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);
@@ -608,14 +608,14 @@ public with sharing class BDI_DataImport_TEST {
         system.assertNotEquals(null, listCon[2].AccountId);
         system.assertNotEquals(null, listCon[3].AccountId);
         
-        list<Account> listAcc = [select Id, Name from Account where Type != 'Household' order by Name];
+        list<Account> listAcc = [select Id, Name from Account where Type != 'Household'];
         system.assertEquals(2, listAcc.size());
         system.assertEquals(listCon[0].Primary_Affiliation__c, listAcc[0].Id);
         system.assertEquals(listCon[1].Primary_Affiliation__c, null);
         system.assertEquals(listCon[2].Primary_Affiliation__c, null);
         system.assertEquals(listCon[3].Primary_Affiliation__c, listAcc[1].Id);
         
-        list<npe5__Affiliation__c> listAffl = [select Id, npe5__Contact__c, npe5__Organization__c from npe5__Affiliation__c order by npe5__Contact__r.Name];
+        list<npe5__Affiliation__c> listAffl = [select Id, npe5__Contact__c, npe5__Organization__c from npe5__Affiliation__c];
         system.assertEquals(2, listAffl.size());
         system.assertEquals(listCon[0].Id, listAffl[0].npe5__Contact__c);
         system.assertEquals(listCon[3].Id, listAffl[1].npe5__Contact__c);
@@ -650,7 +650,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId, MailingCity from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, AccountId, MailingCity from Contact];
         system.assertEquals(4, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);
@@ -670,7 +670,7 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals('Portland', listAddr[0].MailingCity__c);
         system.assertEquals('Seattle', listAddr[1].MailingCity__c);
         
-        list<Account> listAcc = [select Id, Name, BillingCity from Account order by Name];
+        list<Account> listAcc = [select Id, Name, BillingCity from Account];
         system.assertEquals(2, listAcc.size());
         system.assertEquals('Seattle', listAcc[0].BillingCity);
         system.assertEquals('Portland', listAcc[1].BillingCity);
@@ -717,7 +717,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
 
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId, MailingCity from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, AccountId, MailingCity from Contact];
         system.assertEquals(4, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);
@@ -735,7 +735,7 @@ public with sharing class BDI_DataImport_TEST {
         list<Address__c> listAddr = [select Id, Household_Account__c, MailingCity__c from Address__c order by MailingCity__c];
         system.assertEquals(4, listAddr.size());
 
-        list<Account> listAcc = [select Id, Name, BillingCity from Account order by Name];
+        list<Account> listAcc = [select Id, Name, BillingCity from Account];
         system.assertEquals(2, listAcc.size());
         system.assertEquals('Portland', listAcc[0].BillingCity);
         system.assertEquals('Portland', listAcc[1].BillingCity);
@@ -787,7 +787,7 @@ public with sharing class BDI_DataImport_TEST {
     
         // verify expected results
         list<Contact> listCon = [select Id, Name, AccountId, MailingStreet, MailingCity, MailingState, 
-            MailingPostalCode, MailingCountry from Contact order by Lastname];
+            MailingPostalCode, MailingCountry from Contact];
         system.assertEquals(2, listCon.size());
         for (Contact con : listCon) {        
             system.assertEquals(listDI[0].Home_Street__c, con.MailingStreet);
@@ -807,7 +807,7 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals(listDI[0].Home_Country__c, listAddr[0].MailingCountry__c);
         
         list<Account> listAcc = [select Id, Name, BillingStreet, BillingCity, BillingState, 
-            BillingPostalCode, BillingCountry from Account order by Name desc];
+            BillingPostalCode, BillingCountry from Account];
         // because c2 is first created as a contact1, it will get a hh account, that will
         // later get orphaned when we move c2 to c1's hh account.
         system.assertEquals(2, listAcc.size());
@@ -817,7 +817,7 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals(listDI[0].Home_Zip_Postal_Code__c, listAcc[0].BillingPostalCode);
         system.assertEquals(listDI[0].Home_Country__c, listAcc[0].BillingCountry);                
 
-        listDI = [select HomeAddressImported__c, HomeAddressImportStatus__c from DataImport__c order by Name];
+        listDI = [select HomeAddressImported__c, HomeAddressImportStatus__c from DataImport__c];
         system.assertEquals(5, listDI.size());
         integer cCreated = 0;
         integer cMatched = 0;
@@ -868,7 +868,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId, MailingCity from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, AccountId, MailingCity from Contact];
         system.assertEquals(4, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);
@@ -886,7 +886,7 @@ public with sharing class BDI_DataImport_TEST {
         list<Address__c> listAddr = [select Id, Household_Account__c, MailingCity__c from Address__c order by MailingCity__c]; 
         system.assertEquals(0, listAddr.size());
         
-        list<Account> listAcc = [select Id, Name, BillingCity from Account order by Name];
+        list<Account> listAcc = [select Id, Name, BillingCity from Account];
         system.assertEquals(2, listAcc.size());
         system.assertEquals('Seattle', listAcc[0].BillingCity);
         system.assertEquals('Portland', listAcc[1].BillingCity);                
@@ -925,7 +925,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name from Contact];
         system.assertEquals(2, listCon.size());
         
         list<Address__c> listAddr = [select Id, Household_Account__c, MailingCity__c from Address__c order by MailingCity__c]; 
@@ -935,7 +935,7 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals('Seattle', listAddr[2].MailingCity__c);
         
         listDI = [select Contact1Imported__c, Contact1ImportStatus__c, HouseholdAccountImported__c, 
-            HomeAddressImported__c, HomeAddressImportStatus__c from DataImport__c order by Contact1_Lastname__c];
+            HomeAddressImported__c, HomeAddressImportStatus__c from DataImport__c];
         system.assertEquals(2, listDI.size());
         system.assertEquals(listDI[0].Contact1Imported__c, listCon[0].Id);
         system.assertEquals(listDI[1].Contact1Imported__c, listCon[1].Id);
@@ -990,7 +990,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, MailingCity from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, MailingCity from Contact];
         system.assertEquals(2, listCon.size());
         system.assertEquals('Bellevue', listCon[0].MailingCity);
         system.assertEquals('Bellevue', listCon[1].MailingCity);
@@ -998,7 +998,7 @@ public with sharing class BDI_DataImport_TEST {
         list<Address__c> listAddr = [select Id, Household_Account__c, MailingCity__c from Address__c order by MailingCity__c];
         system.assertEquals(0, listAddr.size()); 
         
-        list<Account> listAcc = [select Id, Name, BillingCity from Account order by Name];
+        list<Account> listAcc = [select Id, Name, BillingCity from Account];
         system.assertEquals(2, listAcc.size());
         system.assertEquals('Bellevue', listAcc[0].BillingCity);
         system.assertEquals('Bellevue', listAcc[1].BillingCity);                
@@ -1038,7 +1038,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact];
         system.assertEquals(4, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);
@@ -1055,7 +1055,7 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals(0, listCon[2].npo02__TotalOppAmount__c);
         system.assertEquals(0, listCon[3].npo02__TotalOppAmount__c);
         
-        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account order by Name];
+        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account];
         system.assertEquals(2, listAcc.size());
         system.assertEquals(0, listAcc[0].npo02__TotalOppAmount__c);
         system.assertEquals(0, listAcc[1].npo02__TotalOppAmount__c);
@@ -1076,7 +1076,7 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals('abc', listPmt[0].npe01__Check_Reference_Number__c);
         system.assertEquals('1234', listPmt[1].npe01__Check_Reference_Number__c);
 
-        list<OpportunityContactRole> listOCR = [select Id, ContactId, OpportunityId from OpportunityContactRole order by Contact.Name];
+        list<OpportunityContactRole> listOCR = [select Id, ContactId, OpportunityId from OpportunityContactRole];
         system.assertEquals(4, listOCR.size());
         system.assertEquals(listCon[0].Id, listOCR[0].ContactId);
         system.assertEquals(listCon[1].Id, listOCR[1].ContactId);
@@ -1123,7 +1123,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results        
-        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account order by Name];
+        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account];
         system.assertEquals(2, listAcc.size());
         // we no longer run rollups, unless the setting is specified
         system.assertEquals(0, listAcc[0].npo02__TotalOppAmount__c);
@@ -1145,7 +1145,7 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals('abc', listPmt[0].npe01__Check_Reference_Number__c);
         system.assertEquals('1234', listPmt[1].npe01__Check_Reference_Number__c);
 
-        list<OpportunityContactRole> listOCR = [select Id, ContactId, OpportunityId from OpportunityContactRole order by Contact.Name];
+        list<OpportunityContactRole> listOCR = [select Id, ContactId, OpportunityId from OpportunityContactRole];
         system.assertEquals(0, listOCR.size());
 
         listDI = [select Id, DonationImported__c, DonationImportStatus__c from DataImport__c order by Account1_Name__c];
@@ -1189,10 +1189,10 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact];
         system.assertEquals(2, listCon.size());
         
-        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account order by Name];
+        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account];
         system.assertEquals(2, listAcc.size());
         // we no longer run rollups, unless the setting is specified
         system.assertEquals(0, listAcc[0].npo02__TotalOppAmount__c);
@@ -1247,10 +1247,10 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact];
         system.assertEquals(2, listCon.size());
         
-        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account order by Name];
+        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account];
         system.assertEquals(2, listAcc.size());
                         
         list<Campaign> listCmp = [select Id, Name from Campaign order by Name];
@@ -1290,7 +1290,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results        
-        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account order by Name];
+        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account];
         system.assertEquals(2, listAcc.size());
         // we no longer run rollups, unless the setting is specified
         system.assertEquals(0, listAcc[0].npo02__TotalOppAmount__c);
@@ -1332,7 +1332,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId, Account.Phone from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, AccountId, Account.Phone from Contact];
         system.assertEquals(2, listCon.size());
         system.assertNotEquals(listCon[1].Name, listCon[0].Name);
         system.assertEquals(listDI[0].Household_Phone__c, listCon[0].Account.Phone);
@@ -1365,7 +1365,7 @@ public with sharing class BDI_DataImport_TEST {
         insert listConExisting;
         
         // get their households
-        listConExisting = [select Id, Firstname, Lastname, Email, AccountId from Contact order by Firstname];
+        listConExisting = [select Id, Firstname, Lastname, Email, AccountId from Contact];
         system.assertEquals(2, listConExisting.size());
         
         list<DataImport__c> listDI = new list<DataImport__c>();
@@ -1382,7 +1382,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Firstname, Lastname, Name, AccountId from Contact order by Lastname, Firstname];
+        list<Contact> listCon = [select Id, Firstname, Lastname, Name, AccountId from Contact];
         system.assertEquals(5, listCon.size());
         system.assertEquals(listConExisting[0].AccountId, listCon[0].AccountId);
         system.assertEquals(listConExisting[0].AccountId, listCon[1].AccountId);
@@ -1424,7 +1424,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
 
         // verify expected results
-        list<Contact> listCon = [select Id, Firstname, Lastname, Name, AccountId, Salutation from Contact order by Lastname, Firstname];
+        list<Contact> listCon = [select Id, Firstname, Lastname, Name, AccountId, Salutation from Contact];
         system.assertEquals(2, listCon.size());
         system.assertEquals(hhId, listCon[0].AccountId);
         system.assertEquals(hhId, listCon[1].AccountId);

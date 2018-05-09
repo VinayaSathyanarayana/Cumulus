@@ -2105,6 +2105,10 @@
         <name>MatchingRule</name>
     </types>
     <types>
+        <members>KeyMaster</members>
+        <name>PermissionSet</name>
+    </types>
+    <types>
         <members>Account.New_Address</members>
         <members>Account.New_Affiliation</members>
         <members>Account.Quick_Household_Update</members>

@@ -211,7 +211,7 @@ private with sharing class BDI_DataImport_TEST2 {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name from Contact];
         system.assertEquals(4, listCon.size());
 
         listDI = [select Contact1Imported__c, Contact1ImportStatus__c, HouseholdAccountImported__c, 
@@ -260,7 +260,7 @@ private with sharing class BDI_DataImport_TEST2 {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, Email, npe01__HomeEmail__c, npe01__WorkEmail__c, npe01__AlternateEmail__c from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, Email, npe01__HomeEmail__c, npe01__WorkEmail__c, npe01__AlternateEmail__c from Contact];
         system.assertEquals(1, listCon.size());
         system.assertEquals('c1@c1.com', listCon[0].npe01__HomeEmail__c);
         system.assertEquals('c1@alt.com', listCon[0].npe01__AlternateEmail__c);
@@ -314,7 +314,7 @@ private with sharing class BDI_DataImport_TEST2 {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, Email, HomePhone, MobilePhone, Phone, npe01__WorkPhone__c from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, Email, HomePhone, MobilePhone, Phone, npe01__WorkPhone__c from Contact];
         system.assertEquals(1, listCon.size());
         system.assertEquals('123-456-7890', listCon[0].HomePhone);
         system.assertEquals('999-888-7777', listCon[0].MobilePhone);
@@ -693,7 +693,7 @@ private with sharing class BDI_DataImport_TEST2 {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, Email, Title from Contact order by Title NULLS LAST, Lastname NULLS LAST]; // id1, id2, id3, id4, null (c1), null (c2)
+        list<Contact> listCon = [select Id, Name, Email, Title from Contact order by Title NULLS LAST]; // id1, id2, id3, id4, null (c1), null (c2)
         system.assertEquals(6, listCon.size());
         system.debug('****DJH: listCon ' + listCon);
         
@@ -828,7 +828,7 @@ private with sharing class BDI_DataImport_TEST2 {
         Test.stopTest();
     
         // verify expected results
-        list<Account> listAcc = [select Id, Name, Website from Account order by Website NULLS LAST, Name]; // id1, id2, id3, id4, null (a1), null (a2)
+        list<Account> listAcc = [select Id, Name, Website from Account order by Website NULLS LAST]; // id1, id2, id3, id4, null (a1), null (a2)
         system.debug('****DJH: listAcc ' + listAcc);
         system.assertEquals(6, listAcc.size());
         
@@ -882,7 +882,7 @@ private with sharing class BDI_DataImport_TEST2 {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, npe01__Preferred_Email__c from Contact order by Name];
+        list<Contact> listCon = [select Id, Name, npe01__Preferred_Email__c from Contact];
         system.assertEquals(4, listCon.size());
         system.assertEquals('Personal', listCon[0].npe01__Preferred_Email__c);
         system.assertEquals('Work', listCon[1].npe01__Preferred_Email__c);
@@ -930,7 +930,7 @@ private with sharing class BDI_DataImport_TEST2 {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, npe01__PreferredPhone__c from Contact order by Name];
+        list<Contact> listCon = [select Id, Name, npe01__PreferredPhone__c from Contact];
         system.assertEquals(5, listCon.size());
         system.assertEquals('Home', listCon[0].npe01__PreferredPhone__c);
         system.assertEquals('Work', listCon[1].npe01__PreferredPhone__c);
@@ -1060,7 +1060,7 @@ private with sharing class BDI_DataImport_TEST2 {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name from Contact order by Name];
+        list<Contact> listCon = [select Id, Name from Contact];
         system.assertEquals(4, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
 
@@ -1121,7 +1121,7 @@ private with sharing class BDI_DataImport_TEST2 {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name from Contact order by Name];
+        list<Contact> listCon = [select Id, Name from Contact];
         system.assertEquals(4, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
 
@@ -1180,7 +1180,7 @@ private with sharing class BDI_DataImport_TEST2 {
         Test.stopTest();
     
         // verify expected results
-        list<Account> listAcc = [select Id, Name from Account order by Name];
+        list<Account> listAcc = [select Id, Name from Account];
         system.assertEquals(6, listAcc.size());
 
         listDI = [select Status__c, FailureInformation__c, Account1Imported__c, Account1ImportStatus__c,
@@ -1364,7 +1364,7 @@ private with sharing class BDI_DataImport_TEST2 {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name from Contact order by Name];
+        list<Contact> listCon = [select Id, Name from Contact];
         system.assertEquals(2, listCon.size());
         system.assertNotEquals(listCon[1].Name, listCon[0].Name);
 
@@ -1412,7 +1412,7 @@ private with sharing class BDI_DataImport_TEST2 {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name from Contact order by Name];
+        list<Contact> listCon = [select Id, Name from Contact];
         system.assertEquals(2, listCon.size());
         system.assertNotEquals(listCon[1].Name, listCon[0].Name);
 
@@ -1454,7 +1454,7 @@ private with sharing class BDI_DataImport_TEST2 {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, npe01__Preferred_Email__c from Contact order by Name];
+        list<Contact> listCon = [select Id, Name, npe01__Preferred_Email__c from Contact];
         system.assertEquals(0, listCon.size());
       
         listDI = [select Contact1Imported__c, Status__c, FailureInformation__c from DataImport__c];
@@ -1525,13 +1525,13 @@ private with sharing class BDI_DataImport_TEST2 {
         system.assert(listDI[1].FailureInformation__c.contains('invalid city'));        
         system.assertEquals(null, listDI[2].FailureInformation__c);        
 
-        list<Account> listAcc = [select Id, Name, BillingCity from Account order by Name];
+        list<Account> listAcc = [select Id, Name, BillingCity from Account];
         system.assertEquals(3, listAcc.size());
         system.assertEquals('Seattle', listAcc[0].BillingCity);
         system.assertEquals(null, listAcc[1].BillingCity);
         system.assertEquals('Portland', listAcc[2].BillingCity);
                 
-        list<Contact> listCon = [select Id, Name, AccountId, MailingCity from Contact order by Lastname];
+        list<Contact> listCon = [select Id, Name, AccountId, MailingCity from Contact];
         system.assertEquals(3, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);

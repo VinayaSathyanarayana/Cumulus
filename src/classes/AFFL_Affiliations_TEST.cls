@@ -748,7 +748,7 @@ public class AFFL_Affiliations_TEST {
         
         queryAffl = [select id, npe5__Status__c, npe5__StartDate__c, npe5__Role__c, 
             npe5__Organization__c, npe5__EndDate__c, npe5__Contact__c from npe5__Affiliation__c 
-            where npe5__Organization__c = :acc.id ORDER BY npe5__Contact__r.LastName];        
+            where npe5__Organization__c = :acc.id];        
         
         System.assertEquals(2, queryAffl.size(), 'Two affiliations should exist.');
         system.assertEquals(system.label.npe5.DefaultCurrentStatus, queryAffl[0].npe5__Status__c, 'The existing affiliation\'s status should be unchanged.');

@@ -110,12 +110,12 @@ public with sharing class BDI_Donations_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact order by Firstname];
+        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact];
         system.assertEquals(2, listCon.size());
         system.assertEquals(listOppT[0].Amount, listCon[0].npo02__TotalOppAmount__c);
         system.assertEquals(listOppT[1].Amount, listCon[1].npo02__TotalOppAmount__c);
         
-        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account order by Name];
+        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account];
         system.assertEquals(2, listAcc.size());
         system.assertEquals(listOppT[0].Amount, listAcc[0].npo02__TotalOppAmount__c);
         system.assertEquals(listOppT[1].Amount, listAcc[1].npo02__TotalOppAmount__c);
@@ -177,12 +177,12 @@ public with sharing class BDI_Donations_TEST {
         Test.stopTest();
 
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact order by Firstname];
+        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact];
         system.assertEquals(2, listCon.size());
         system.assertEquals(listOppT[0].Amount, listCon[0].npo02__TotalOppAmount__c);
         system.assertEquals(listOppT[1].Amount, listCon[1].npo02__TotalOppAmount__c);
 
-        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account order by Name];
+        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account];
         system.assertEquals(2, listAcc.size());
         system.assertEquals(listOppT[0].Amount, listAcc[0].npo02__TotalOppAmount__c);
         system.assertEquals(listOppT[1].Amount, listAcc[1].npo02__TotalOppAmount__c);
@@ -252,12 +252,12 @@ public with sharing class BDI_Donations_TEST {
         Test.stopTest();
 
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact order by Firstname];
+        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact];
         system.assertEquals(2, listCon.size());
         system.assertEquals(listOppT[0].Amount, listCon[0].npo02__TotalOppAmount__c);
         system.assertEquals(listOppT[1].Amount, listCon[1].npo02__TotalOppAmount__c);
 
-        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account order by Name];
+        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account];
         system.assertEquals(2, listAcc.size());
         system.assertEquals(listOppT[0].Amount, listAcc[0].npo02__TotalOppAmount__c);
         system.assertEquals(listOppT[1].Amount, listAcc[1].npo02__TotalOppAmount__c);
@@ -333,12 +333,12 @@ public with sharing class BDI_Donations_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact order by Firstname];
+        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact];
         system.assertEquals(2, listCon.size());
         system.assertEquals(listOppT[0].Amount, listCon[0].npo02__TotalOppAmount__c);
         system.assertEquals(listOppT[1].Amount, listCon[1].npo02__TotalOppAmount__c);
         
-        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account order by Name];
+        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account];
         system.assertEquals(2, listAcc.size());
         system.assertEquals(listOppT[0].Amount, listAcc[0].npo02__TotalOppAmount__c);
         system.assertEquals(listOppT[1].Amount, listAcc[1].npo02__TotalOppAmount__c);
@@ -430,7 +430,7 @@ public with sharing class BDI_Donations_TEST {
         system.assertEquals(false, listOpp[0].isWon);
         system.assertEquals(true, listOpp[1].isWon);
         
-        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact order by Firstname];
+        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact];
         system.assertEquals(2, listCon.size());
         system.assertEquals(0, listCon[0].npo02__TotalOppAmount__c);
         system.assertEquals(listOppT[1].Amount, listCon[1].npo02__TotalOppAmount__c);
@@ -517,12 +517,12 @@ public with sharing class BDI_Donations_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact order by Firstname];
+        list<Contact> listCon = [select Id, Name, AccountId, npo02__TotalOppAmount__c from Contact];
         system.assertEquals(2, listCon.size());
         system.assertEquals(listOppT[0].Amount, listCon[0].npo02__TotalOppAmount__c);
         system.assertEquals(listOppT[1].Amount * 2, listCon[1].npo02__TotalOppAmount__c);
         
-        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account order by npe01__One2OneContact__r.Firstname];
+        list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account];
         system.assertEquals(2, listAcc.size());
         system.assertEquals(listOppT[0].Amount, listAcc[0].npo02__TotalOppAmount__c);
         system.assertEquals(listOppT[1].Amount * 2, listAcc[1].npo02__TotalOppAmount__c);

@@ -63,7 +63,7 @@ public with sharing class UTIL_Typeahead {
 	    
 	    String sFields = (fieldNames == null || fieldNames.isEmpty()) ? 'Id, Name' : 
 	        String.escapeSingleQuotes( String.join( fieldNames, ', ' ) );  
-	    
+	    // SHIELD Dynamic Search and Sort
 	    String sOrder = ' ORDER BY ' + ( (orderBy == null || orderBy == '') ? 'Name' : String.escapeSingleQuotes(orderBy) ); 
 	    
 	    String sLimit = (recordLimit == null || recordLimit == 0 || recordLimit >= 2000) ? '' : 

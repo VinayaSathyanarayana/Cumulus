@@ -391,7 +391,7 @@ private class TDTM_DMLgt200_TEST {
 
         Test.stopTest();
 
-        for (Contact c : [SELECT Id, FirstName, LastName, Account.Name FROM Contact WHERE Id IN :contacts ORDER BY LastName]) {
+        for (Contact c : [SELECT Id, FirstName, LastName, Account.Name FROM Contact WHERE Id IN :contacts]) {
             System.assert(c.Account.Name.contains(c.LastName), 'The Account Name should contain the Contacts last name');
         }
     }

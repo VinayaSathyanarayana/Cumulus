@@ -198,7 +198,7 @@ public with sharing class BDI_DataImportAPI_TEST {
         system.assertNotEquals(null, listResult[0].apexJobId);
         system.assertNotEquals(null, listResult[1].apexJobId);
 
-        list<Contact> listCon = [select Id, Name from Contact order by Name];
+        list<Contact> listCon = [select Id, Name from Contact];
         system.assertEquals(2, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);

@@ -68,7 +68,7 @@ public with sharing class BDI_PostProcess_TEST {
         Test.stopTest();
 
         // verify expected results
-        list<Contact> listCon = [SELECT Id, Name, AccountId FROM Contact ORDER BY Lastname, Firstname];
+        list<Contact> listCon = [SELECT Id, Name, AccountId FROM Contact];
         system.assertEquals(8, listCon.size());
 
         List<npe4__Relationship__c> listRel = [SELECT npe4__Contact__c, npe4__RelatedContact__c, npe4__Type__c, npe4__Status__c

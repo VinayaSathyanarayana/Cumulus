@@ -277,7 +277,7 @@ private class LVL_LevelAssignBATCH_TEST {
     */
     static void verifyContactLevels() {
         string strSoql = 'SELECT Id, Name, npo02__TotalOppAmount__c, npo02__LastMembershipLevel__c, npo02__LastMembershipOrigin__c, CreatedDate, LastModifiedDate FROM Contact';
-        listCon = database.query(strSoql + ' order by FirstName');
+        listCon = database.query(strSoql);
         System.assertEquals(lvlTin.Id, listCon[0].npo02__LastMembershipLevel__c);
         System.assertEquals(null, listCon[0].npo02__LastMembershipOrigin__c);
         
@@ -332,7 +332,7 @@ private class LVL_LevelAssignBATCH_TEST {
         Database.executeBatch(batch);
         Test.stopTest();
         
-        listAcc = database.query(strSoql + ' order by Name');
+        listAcc = database.query(strSoql);
         System.assertEquals(null, listAcc[0].npo02__LastMembershipLevel__c);
         System.assertEquals(null, listAcc[0].npo02__LastMembershipOrigin__c);
         
