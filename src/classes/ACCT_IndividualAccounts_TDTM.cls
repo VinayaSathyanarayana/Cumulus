@@ -459,7 +459,12 @@ public class ACCT_IndividualAccounts_TDTM extends TDTM_Runnable {
     private void attachToBucketAccount(Contact[] contacts)
     {
         //grab the first Account that is named Individual
-        List<Account> individuals = [Select Id from Account where name = :CAO_Constants.BUCKET_ACCOUNT_NAME ORDER BY CreatedDate Desc Limit 1];
+        if (!Schema.sObjectType.Account.fields.Name.isFilterable()) {
+            return;
+        }
+        String bucketAccount = CAO_Constants.BUCKET_ACCOUNT_NAME;
+        String query = 'SELECT Id FROM Account WHERE Name = :bucketAccount ORDER BY CreatedDate Desc Limit 1';
+        List<Account> individuals = Database.query(query);
         
         Id individualAccountId = CAO_Constants.GetIndividualAccountId();
         
@@ -474,7 +479,7 @@ public class ACCT_IndividualAccounts_TDTM extends TDTM_Runnable {
         {
             //if there is no bucket Account, the bucket model won't function unless we create one
             Account individual = new Account();
-            individual.Name = CAO_Constants.BUCKET_ACCOUNT_NAME;
+            individual.Name = bucketAccount;
             //flag the account as an individual account
             individual.npe01__SYSTEMISINDIVIDUAL__c = true;
             //individual.Type = CAO_Constants.BUCKET_ORGANIZATION_TYPE;

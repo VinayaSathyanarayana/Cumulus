@@ -45,6 +45,9 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
     * @description Tests the conversion process for 1to1 Contacts & Households to Household Contacts and Household Accounts
     */
     public testmethod static void testAccountConversion1to1(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         if (strTestOnly != '*' && strTestOnly != 'testAccountConversion1to1') return;
         //setup 1x1 model and test account creation
         CONV_Account_Conversion_BATCH_TEST.setPreHHAccountModel(true);
@@ -83,7 +86,7 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
         Test.StopTest();
 
         //get the newly created Households
-        List<Account> newHHAccounts = [select npo02__TotalOppAmount__c, Id from Account where Name = :HHName];
+        List<Account> newHHAccounts = [select npo02__TotalOppAmount__c, Id from Account];
         //should be total HH count from above
         system.assertEquals(150, newHHAccounts.size());
         //total gifts should be the same for any of the 149
@@ -108,6 +111,9 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
     * @description Tests the conversion process for Bucket Contacts & Households to Household Contacts and Household Accounts
     */
     public testmethod static void testAccountConversionBucket(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         if (strTestOnly != '*' && strTestOnly != 'testAccountConversionBucket') return;
 
         //setup bucket model and test account creation
@@ -115,7 +121,7 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
 
         Contact c = new Contact(LastName = 'Contact', FirstName = 'Test');
         insert c;
-        Id indID = [select id from Account where Name = 'Individual'].id;
+        Id indID = [select id from Account].id;
 
         system.assertEquals(indID, CAO_Constants.GetIndividualAccountId());
 
@@ -148,7 +154,7 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
         Test.StopTest();
 
         //get the newly created Household
-        Account newHHAccount = [select npo02__TotalOppAmount__c, Id from Account where Name = :HHName];
+        Account newHHAccount = [select npo02__TotalOppAmount__c, Id from Account];
         system.assertNotEquals(null, newHHAccount);
         system.assertEquals(newHHAccount.id, [select AccountId from Contact where id = :c.id].AccountId);
         system.assertEquals(newHHAccount.npo02__TotalOppAmount__c, 1000.00);
@@ -164,6 +170,9 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
     * @description Tests the conversion process for Contacts with a single address
     */
     public testMethod static void testSingleContactAddress(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+        
         if (strTestOnly != '*' && strTestOnly != 'testSingleContactAddress') return;
 
         //setup individual model and test account creation
@@ -173,7 +182,7 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
                                 MailingStreet = '123 Main St.', MailingCity = 'San Francisco',
                                 MailingPostalCode = '94105', MailingState = 'California', MailingCountry = 'United States');
         insert c;
-        Id indID = [select id from Account where Name = 'Individual'].id;
+        Id indID = [select id from Account].id;
 
         system.assertEquals(indID, CAO_Constants.GetIndividualAccountId());
 
@@ -196,7 +205,7 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
 
         //get the newly created Household
         Account newHHAccount = [select npo02__TotalOppAmount__c, npe01__One2OneContact__c, Number_of_Household_Members__c, 
-            BillingStreet, BillingCity, Id from Account where Name = :HHName];
+            BillingStreet, BillingCity, Id from Account];
         system.assertNotEquals(null, newHHAccount);
         system.assertEquals(1, newHHAccount.Number_of_Household_Members__c);
         system.assertEquals(c.MailingStreet, newHHAccount.BillingStreet);
@@ -213,6 +222,9 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
     * @description Tests the conversion process for Contacts with two addresses
     */
     public testMethod static void test2ContactAddresses(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         if (strTestOnly != '*' && strTestOnly != 'test2ContactAddresses') return;
 
         //setup individual model and test account creation
@@ -262,18 +274,18 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
 
         //get the newly created Household
         String HHName =  'Contact ' + System.label.npo02.DefaultHouseholdName;
-        Account newHHAccount = [select npo02__TotalOppAmount__c, npe01__One2OneContact__c, Number_of_Household_Members__c, BillingStreet, BillingCity, Id from Account where Name = :HHName];
+        Account newHHAccount = [select npo02__TotalOppAmount__c, npe01__One2OneContact__c, Number_of_Household_Members__c, BillingStreet, BillingCity, Id from Account];
         system.assertNotEquals(null, newHHAccount);
         system.assertEquals(2, newHHAccount.Number_of_Household_Members__c);
         system.assertEquals(c2.MailingStreet, newHHAccount.BillingStreet);
         system.assertEquals(c2.Id, newHHAccount.npe01__One2OneContact__c);
         system.assertEquals(2, [select count() from Address__c]);
-        c2 = [select id, is_Address_Override__c, Current_Address__c, Account.BillingStreet, MailingStreet from Contact where Id = :c2.Id and FirstName = 'Test2'];
+        c2 = [select id, is_Address_Override__c, Current_Address__c, Account.BillingStreet, MailingStreet from Contact where Id = :c2.Id];
         system.assertEquals('1 1st Avenue', c2.Account.BillingStreet);
         system.assertEquals('1 1st Avenue', c2.MailingStreet);
         system.assertEquals(false, c2.is_Address_Override__c);
         system.assertNotEquals(null, c2.Current_Address__c);
-        c = [select id, is_Address_Override__c, Current_Address__c, Account.BillingStreet, MailingStreet from Contact where Id = :c.Id and FirstName = 'Test'];
+        c = [select id, is_Address_Override__c, Current_Address__c, Account.BillingStreet, MailingStreet from Contact where Id = :c.Id];
         system.assertEquals('1 1st Avenue', c.Account.BillingStreet);
         system.assertEquals('123 Main St.', c.MailingStreet);
         system.assertEquals(true, c.is_Address_Override__c);
@@ -286,6 +298,9 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
     * @description Tests the conversion process for Contacts with two addresses, but address verification disabled
     */
     public testMethod static void testContactDisableAddresses(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         if (strTestOnly != '*' && strTestOnly != 'testContactDisableAddresses') return;
 
         //setup individual model and test account creation
@@ -336,18 +351,18 @@ public with sharing class CONV_Account_Conversion_BATCH_TEST {
 
         //get the newly created Household
         String HHName =  'Contact ' + System.label.npo02.DefaultHouseholdName;
-        Account newHHAccount = [select npo02__TotalOppAmount__c, npe01__One2OneContact__c, Number_of_Household_Members__c, BillingStreet, BillingCity, Id from Account where Name = :HHName];
+        Account newHHAccount = [select npo02__TotalOppAmount__c, npe01__One2OneContact__c, Number_of_Household_Members__c, BillingStreet, BillingCity, Id from Account];
         system.assertNotEquals(null, newHHAccount);
         system.assertEquals(2, newHHAccount.Number_of_Household_Members__c);
         //system.assertEquals(null, newHHAccount.BillingStreet, 'The contact addresses shouldn\'t be copied over during the conversion.');
         system.assertEquals(c2.Id, newHHAccount.npe01__One2OneContact__c);
         system.assertEquals(0, [select count() from Address__c], 'No address objects should be created.');
-        c2 = [select id, is_Address_Override__c, Current_Address__c, Account.BillingStreet, MailingStreet from Contact where Id = :c2.Id and FirstName = 'Test2'];
+        c2 = [select id, is_Address_Override__c, Current_Address__c, Account.BillingStreet, MailingStreet from Contact where Id = :c2.Id];
         system.assertEquals(null, c2.Account.BillingStreet);
         system.assertEquals('1 1st Avenue', c2.MailingStreet);
         system.assertEquals(false, c2.is_Address_Override__c);
         system.assertEquals(null, c2.Current_Address__c);
-        c = [select id, is_Address_Override__c, Current_Address__c, Account.BillingStreet, MailingStreet from Contact where Id = :c.Id and FirstName = 'Test'];
+        c = [select id, is_Address_Override__c, Current_Address__c, Account.BillingStreet, MailingStreet from Contact where Id = :c.Id];
         system.assertEquals(null, c.Account.BillingStreet);
         system.assertEquals('123 Main St.', c.MailingStreet);
         system.assertEquals(false, c.is_Address_Override__c);

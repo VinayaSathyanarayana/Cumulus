@@ -45,12 +45,18 @@ private class LD_LeadConvertOverride_TEST {
     * @description Runs newLead_Conversion_Test with the 1x1 account model
     */
     static testMethod void newLeadConversion_TestOne2One(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         newLeadConversion_Test(CAO_Constants.ONE_TO_ONE_PROCESSOR);
     }
     /*******************************************************************************************************
     * @description Runs newLead_Conversion_Test with the Household account model
     */
     static testMethod void newLeadConversion_TestHHAccount(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+        
         newLeadConversion_Test(CAO_Constants.HH_ACCOUNT_PROCESSOR);
     }
     /*******************************************************************************************************
@@ -106,7 +112,7 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name from Contact where lastname = :leadLastName];
+        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name from Contact];
         //one contact should have been created
         system.assertEquals(1,convertedContacts.size());
         system.assertEquals(true,convertedContacts[0].Account.npe01__Systemisindividual__c);
@@ -114,7 +120,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account where name = :accountName];
+            List<Account> createdAccount2 = [select id from Account];
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);
@@ -195,7 +201,7 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c from Contact where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS];
+        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c from Contact];
         lead[] unconvertedLeads = [select id, firstname, lastname from lead where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS and isconverted = false];
         //no lead still unconverted
         system.assertEquals(0,unconvertedLeads.size());
@@ -267,7 +273,7 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname, Account.npe01__Systemisindividual__c, Account.Name from Contact where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS];
+        Contact[] convertedContacts = [select id, firstname, lastname, Account.npe01__Systemisindividual__c, Account.Name from Contact];
         lead[] unconvertedLeads = [select id, firstname, lastname from lead where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS and isconverted = false];
         //no lead still unconverted
         system.assertEquals(0,unconvertedLeads.size());
@@ -344,7 +350,7 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname, Account.npe01__Systemisindividual__c, Account.Name from Contact where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS];
+        Contact[] convertedContacts = [select id, firstname, lastname, Account.npe01__Systemisindividual__c, Account.Name from Contact];
         lead[] unconvertedLeads = [select id, firstname, lastname from lead where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS and isconverted = false];
         //no lead still unconverted
         system.assertEquals(0,unconvertedLeads.size());
@@ -423,7 +429,7 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname, Account.npe01__Systemisindividual__c, Account.Name from Contact where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS];
+        Contact[] convertedContacts = [select id, firstname, lastname, Account.npe01__Systemisindividual__c, Account.Name from Contact];
         lead[] unconvertedLeads = [select id, firstname, lastname from lead where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS and isconverted = false];
         //no lead still unconverted
         system.assertEquals(0,unconvertedLeads.size());
@@ -441,6 +447,9 @@ private class LD_LeadConvertOverride_TEST {
     * @description Runs newLeadConversionHHObj with the 1x1 account model
     */
     static testMethod void newLeadConversionHHObjOne2One(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         newLeadConversionHHObj(CAO_Constants.ONE_TO_ONE_PROCESSOR);
     }
     /*******************************************************************************************************
@@ -497,7 +506,7 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname, npo02__Household__c, Account.npe01__Systemisindividual__c from Contact where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS];
+        Contact[] convertedContacts = [select id, firstname, lastname, npo02__Household__c, Account.npe01__Systemisindividual__c from Contact];
         lead[] unconvertedLeads = [select id, firstname, lastname from lead where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS and isconverted = false];
         //no lead still unconverted
         system.assertEquals(0,unconvertedLeads.size());
@@ -520,6 +529,9 @@ private class LD_LeadConvertOverride_TEST {
     * @description Runs newLead_Conversion_Test with the 1x1 account model
     */
     static testMethod void newNativeLeadConversion_TestOne2One(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         if (strTestOnly != '*' && strTestOnly != 'newNativeLeadConversion_TestOne2One') return;
         newNativeLeadConversion_Test(CAO_Constants.ONE_TO_ONE_PROCESSOR);
     }
@@ -527,6 +539,9 @@ private class LD_LeadConvertOverride_TEST {
     * @description Runs newLead_Conversion_Test with the Household account model
     */
     static testMethod void newNativeLeadConversion_TestHHAccount(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         if (strTestOnly != '*' && strTestOnly != 'newNativeLeadConversion_TestHHAccount') return;
         newNativeLeadConversion_Test(CAO_Constants.HH_ACCOUNT_PROCESSOR);
     }
@@ -534,6 +549,9 @@ private class LD_LeadConvertOverride_TEST {
     * @description Runs newLead_Conversion_Test with the Individual account model
     */
     static testMethod void newNativeLeadConversion_TestBucketAccount(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         if (strTestOnly != '*' && strTestOnly != 'newNativeLeadConversion_TestBucketAccount') return;
         newNativeLeadConversion_Test(CAO_Constants.BUCKET_PROCESSOR);
     }
@@ -600,7 +618,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account where name = :accountName];
+            List<Account> createdAccount2 = [select id from Account];
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);
@@ -665,7 +683,7 @@ private class LD_LeadConvertOverride_TEST {
         Test.stopTest();
 
         Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name,
-            MailingStreet, MailingCity, MailingState, MailingPostalCode, Current_Address__c from Contact where lastname = :leadLastName];
+            MailingStreet, MailingCity, MailingState, MailingPostalCode, Current_Address__c from Contact];
         //one contact should have been created
         system.assertEquals(1,convertedContacts.size());
         system.assertEquals(true,convertedContacts[0].Account.npe01__Systemisindividual__c);
@@ -673,7 +691,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account where name = :accountName];
+            List<Account> createdAccount2 = [select id from Account];
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);
@@ -704,6 +722,9 @@ private class LD_LeadConvertOverride_TEST {
     * @description Runs newLead_Conversion_Test with the Household account model and verify Opp OCRs and Primary Contact are correct.
     */
     static testMethod void newLeadConversion_TestHHAccountOppOCR(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         newLeadConversion_TestOppOCR(CAO_Constants.HH_ACCOUNT_PROCESSOR);
     }
     /*******************************************************************************************************
@@ -760,7 +781,7 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name from Contact where lastname = :leadLastName];
+        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name from Contact];
         //one contact should have been created
         system.assertEquals(1,convertedContacts.size());
         system.assertEquals(true,convertedContacts[0].Account.npe01__Systemisindividual__c);
@@ -768,7 +789,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account where name = :accountName];
+            List<Account> createdAccount2 = [select id from Account];
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);
@@ -794,18 +815,27 @@ private class LD_LeadConvertOverride_TEST {
     * @description Runs mergeLeadConversion_TestOppOCR with the 1x1 account model and verify Opp OCRs and Primary Contact are correct.
     */
     static testMethod void mergeLeadConversion_TestOne2OneOppOCR(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         mergeLeadConversion_TestOppOCR(CAO_Constants.ONE_TO_ONE_PROCESSOR);
     }
     /*******************************************************************************************************
     * @description Runs mergeLeadConversion_TestOppOCR with the Household account model and verify  Opp OCRs and Primary Contact are correct.
     */
     static testMethod void mergeLeadConversion_TestHHAccountOppOCR(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         mergeLeadConversion_TestOppOCR(CAO_Constants.HH_ACCOUNT_PROCESSOR);
     }
     /*******************************************************************************************************
     * @description Runs mergeLeadConversion_TestOppOCR with the Individual account model and verify Opp OCRs and Primary Contact are correct.
     */
     static testMethod void mergeLeadConversion_TestBucketAccountOppOCR(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         mergeLeadConversion_TestOppOCR(CAO_Constants.BUCKET_PROCESSOR);
     }
     /*******************************************************************************************************
@@ -865,7 +895,7 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name from Contact where lastname = :leadLastName];
+        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name from Contact];
         //one contact should have been created
         system.assertEquals(1,convertedContacts.size());
         system.assertEquals(true,convertedContacts[0].Account.npe01__Systemisindividual__c);
@@ -873,7 +903,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account where name = :accountName];
+            List<Account> createdAccount2 = [select id from Account];
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);
@@ -900,12 +930,18 @@ private class LD_LeadConvertOverride_TEST {
     * @description Runs newLeadConversion_TestOppAFF with the 1x1 account model and verify Opp created for affiliation.
     */
     static testMethod void newLeadConversion_TestOne2OneOppAFF(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         newLeadConversion_TestOppAFF(CAO_Constants.ONE_TO_ONE_PROCESSOR);
     }
     /*******************************************************************************************************
     * @description Runs newLeadConversion_TestOppAFF with the Household account model and verify Opp created for affiliation.
     */
     static testMethod void newLeadConversion_TestHHAccountOppAFF(){
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+
         newLeadConversion_TestOppAFF(CAO_Constants.HH_ACCOUNT_PROCESSOR);
     }
     /*******************************************************************************************************
@@ -965,7 +1001,7 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name, Primary_Affiliation__c, Primary_Affiliation__r.BillingStreet from Contact where lastname = :leadLastName];
+        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name, Primary_Affiliation__c, Primary_Affiliation__r.BillingStreet from Contact];
         //one contact should have been created
         system.assertEquals(1,convertedContacts.size());
         system.assertEquals(true,convertedContacts[0].Account.npe01__Systemisindividual__c);
@@ -975,7 +1011,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account where name = :accountName];
+            List<Account> createdAccount2 = [select id from Account];
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);

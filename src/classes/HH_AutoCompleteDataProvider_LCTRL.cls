@@ -58,7 +58,7 @@ public with sharing class HH_AutoCompleteDataProvider_LCTRL {
             String strSoql = HH_Container_LCTRL.getContactSelectQueryWithFls() + ' WHERE ';
 
             Set<Id> contactIds = new Set<Id>();
-            if (UTIL_Describe.isMiddleNameEnabled() && queryValue.length() > 1) {
+            if (UTIL_Describe.isMiddleNameEnabled() && queryValue.length() > 1 || !Schema.sObjectType.Contact.fields.Name.isFilterable()) {
                 // When the Middlename field is enabled, there is a known issue (as of 6/15/2017) that
                 // prevents a query on the Name field from working properly if the record has a
                 // middlename or suffix value. To work around this, use SOSL to search by name

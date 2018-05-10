@@ -615,10 +615,14 @@ public with sharing class CON_ContactMerge_CTRL {
             strComma = ',';
         }
         
-        searchquery += ' ORDER BY LastName LIMIT ' + SOSL_LIMIT + ')';
+        searchquery += ' LIMIT ' + SOSL_LIMIT + ')';
         //UTIL_Debug.debug('Search Query: ' + searchquery);
+        List<List<SObject>> results = search.query(searchquery);
+        for (List<SObject> result : results) {
+            result.sort();
+        }
         
-        return search.query(searchquery);
+        return results;
         //List<List<SObject>> searchList = new List<List<SObject>>();
     }
     

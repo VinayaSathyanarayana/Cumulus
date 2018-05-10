@@ -173,16 +173,21 @@ public with sharing class LD_LeadConvertOverride_CTRL {
                 String lLastName = l.LastName;
                 String lFirstName = l.FirstName;
                 String lEmail = l.Email;
-
                 Set<String> fieldSet = new Set<String>{'Id', 'Name', 'FirstName', 'LastName'};
-                String queryStr = 'SELECT ';
-                for (FieldSetMember cfs : conFieldSet)
-                   fieldSet.add(cfs.getFieldPath());
-                queryStr += String.join(new List<String>(fieldSet), ',');
-                queryStr += ' FROM Contact WHERE (LastName = :lLastName AND FirstName = :lFirstName) OR (Email = :lEmail AND Email != null) LIMIT 50';
-
-                // find contact matches
-                conMap = new map<id, contact>((List<Contact>)Database.query(queryStr));
+                for (FieldSetMember cfs : conFieldSet) {
+                        fieldSet.add(cfs.getFieldPath());
+                }
+                if (Schema.sObjectType.Contact.fields.Name.isFilterable()) {
+                    String queryStr = 'SELECT ';
+                    queryStr += String.join(new List<String>(fieldSet), ',');
+                    queryStr += ' FROM Contact WHERE (LastName = :lLastName AND FirstName = :lFirstName) OR (Email = :lEmail AND Email != null) LIMIT 50';
+                    List<SObject> queryList = Database.query(queryStr);
+                    conMap = new Map<Id, Contact>((List<Contact>)queryList);
+                } else {
+                    String searchquery = 'FIND \''  + lFirstName + ' AND ' + lLastName + ' OR ' + lEmail + 
+                         '\' IN ALL FIELDS RETURNING Contact(' + String.join(new List<String>(fieldSet), ',') + ')';
+                    conMap = new Map<Id, Contact>((List<Contact>)search.query(searchquery)[0]);
+                }
             }
             return conMap;
         }
@@ -274,7 +279,14 @@ public with sharing class LD_LeadConvertOverride_CTRL {
     public map<Id, Account> mapIdAccountMatches {
         get {
             if (mapIdAccountMatches == null) {
-                mapIdAccountMatches = new map<Id, Account>([select Id, Name, BillingCity from Account where name = :l.company limit 50]);
+                String lCompany = l.company;
+                if (Schema.sObjectType.Account.fields.Name.isFilterable()) {
+                    String query = 'select Id, Name, BillingCity from Account where name = :lCompany limit 50';
+                    mapIdAccountMatches = new Map<Id, Account>((List<Account>)Database.query(query));
+                } else {
+                    String query = 'FIND :lCompany IN Name Fields RETURNING Account(Id, Name, BillingCity)';
+                    mapIdAccountMatches = new Map<Id, Account>((List<Account>)Search.query(query)[0]);
+                }
             }
             return mapIdAccountMatches;
         }

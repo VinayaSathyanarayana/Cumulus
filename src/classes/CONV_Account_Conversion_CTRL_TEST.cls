@@ -37,17 +37,21 @@
 
 @isTest
 public with sharing class CONV_Account_Conversion_CTRL_TEST {
+
     /*******************************************************************************************************
     * @description Envokes a successful run of the controller
     */
     public static testmethod void testConversionCtrl() {
 
+        //skip the test if Advancement is installed
+        if(ADV_PackageInfo_SVC.useAdv()) return;
+        
         //set account model to 1:1 for the test and enable household creation
         CONV_Account_Conversion_BATCH_TEST.setPreHHAccountModel(true);
 
         Contact c = new Contact(LastName = 'Contact', FirstName = 'Test');
         insert c;
-        system.assertEquals(1, [select count() from Account where Name = 'Test Contact' and npe01__One2OneContact__c = :c.id]);
+        system.assertEquals(1, [select count() from Account where npe01__One2OneContact__c = :c.id]);
         String HHName = 'Contact ' + system.label.npo02.DefaultHouseholdName;
         system.assertEquals(1, [select count() from npo02__Household__c where Name = :HHName]);
 

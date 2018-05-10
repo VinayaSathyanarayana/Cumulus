@@ -156,8 +156,9 @@ public with sharing class CAO_Constants {
     public static id getIndividualAccountId () {
     
         // look up the ID if we haven't already done it
-        if ( IndividualAccountId == null ) {
-            List<Account> acct = [select id,npe01__SYSTEMISINDIVIDUAL__c,npe01__SYSTEM_AccountType__c from account where Name =:IndividualAccountName LIMIT 1];
+        if ( IndividualAccountId == null && Schema.sObjectType.Account.fields.Name.isFilterable()) {
+            String query = 'select id,npe01__SYSTEMISINDIVIDUAL__c,npe01__SYSTEM_AccountType__c from account where Name = :IndividualAccountName LIMIT 1';
+            List<Account> acct = Database.query(query);
             if(acct.size()>0){
                 if(acct[0].npe01__SYSTEMISINDIVIDUAL__c==false || acct[0].npe01__SYSTEM_AccountType__c<>CAO_Constants.BUCKET_ORGANIZATION_TYPE){
                     acct[0].npe01__SYSTEMISINDIVIDUAL__c = true;
