@@ -1207,7 +1207,21 @@ global with sharing class BDI_DataImportService {
         if (setSFId.size() > 0) {
             strSoql += ' (Id IN :setSFId) OR ';
         }
-        strSoql += 'Name IN :setName';
+
+        Set<Id> accountIdsFromSearch;
+        if (Schema.sObjectType.Account.fields.Name.isFilterable()) {
+            strSoql += 'Name IN :setName';
+        } else {
+            String queryValue = String.join(new List<String>(setName), ' OR ');
+            List<List<SObject>> searchResults = [FIND :queryValue IN NAME FIELDS RETURNING Account(Id, Name)];
+                for (Account s : (List<Account>)searchResults[0]) {
+                    if (setName.contains(s.Name)) {
+                        accountIdsFromSearch.add((Id) s.get('Id'));
+                    }
+                }
+                strSoql += 'Id in :accountIdsFromSearch ';
+        }
+
         if (isCustomIDInAccountMatchRules && isCustomIdInAccountDatatypeString)
             strSoql += ' OR ' + diSettings.Account_Custom_Unique_ID__c + ' IN :setCustomIDString';
         else if (isCustomIDInAccountMatchRules && !isCustomIdInAccountDatatypeString)
