@@ -129,7 +129,10 @@ public with sharing class UTIL_Query {
     * @return UTIL_Query The instance of the Query builder
     */
     public UTIL_Query withWhere(String whereClause) {
-        return withWhere(new String[]{ whereClause });  
+        if (String.isNotEmpty(whereClause)) {
+            whereClauses.add(whereClause);
+        }
+        return this;
     }
     
     /*********************************************************************************************************

@@ -55,13 +55,26 @@ public with sharing class UTIL_Finder {
     public UTIL_Finder(sObjectType sObjType) {
         this.sObjType = sObjType;
         orderByFields = new List<OrderBy>();
+
+        requiresPostSort = false;
+        requiresSosl = false;
+    }
+
+    /*******************************************************************************************************************
+    * @description Returns UTIL_Finder with all passed in select fields
+    */
+    public UTIL_Finder withSelectFieldsFromReference(Set<Schema.sObjectField> sObjFields, Schema.SObjectField sObjReferenceField) {
+        for (Schema.sObjectField sObjField : sObjFields) {
+            selectFields.add(sObjReferenceField.getDescribe().getRelationshipName() + '.' + String.valueOf(sObjField));
+        }
+
+        return this;
     }
 
     /*******************************************************************************************************************
     * @description Returns UTIL_Finder with all passed in select fields
     */
     public UTIL_Finder withSelectFields(Set<Schema.sObjectField> sObjFields) {
-        selectFields = new Set<String>();
         for (Schema.sObjectField sObjField : sObjFields) {
             selectFields.add(String.valueOf(sObjField));
         }
@@ -108,7 +121,7 @@ public with sharing class UTIL_Finder {
         String query = new UTIL_Query()
                 .withFrom(sObjType)
                 .withSelectFields(selectFields)
-                .withWhere(condition)
+                .withWhere(String.isEmpty(condition) ? null : condition)
                 .withOrderBy(buildOrderBy())
                 .build();
 
@@ -120,7 +133,7 @@ public with sharing class UTIL_Finder {
             return '';
         }
 
-        String orderBy;
+        String orderBy = '';
 
         for (OrderBy orderByField : orderByFields) {
             if (!orderByField.isSortable()) {
@@ -128,7 +141,10 @@ public with sharing class UTIL_Finder {
                 orderBy = '';
                 break;
             } else {
-                orderBy += orderByField.toString() + ' ';
+                if (String.isNotEmpty(orderBy)) {
+                    orderBy += ', ';
+                }
+                orderBy += orderByField.toString();
             }
         }
 
@@ -213,7 +229,7 @@ public with sharing class UTIL_Finder {
         private String getOrderByField() {
             return sObjReferenceField == null ? 
                 String.valueOf(sObjField) :
-                String.valueOf(sObjReferenceField).replace('__c', '__r') + '.' + String.valueOf(sObjField);
+                sObjReferenceField.getDescribe().getRelationshipName() + '.' + String.valueOf(sObjField);
         }
     }
 }

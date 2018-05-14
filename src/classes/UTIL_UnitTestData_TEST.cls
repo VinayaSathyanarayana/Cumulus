@@ -439,12 +439,17 @@ public class UTIL_UnitTestData_TEST {
             Contact.MailingState,
             Contact.MailingPostalCode,
             Contact.MailingCountry,
+            Contact.Name,
             Contact.Primary_Affiliation__c,
-            Contact.npo02__TotalOppAmount__c,
-            Account.npe01__SYSTEM_AccountType__c
+            Contact.Salutation,
+            Contact.npo02__TotalOppAmount__c
         };
+        UTIL_Finder contactFinder =
+            new UTIL_Finder(Contact.sObjectType)
+                .withSelectFields(contactFields)
+                .withSelectFieldsFromReference(new Set<Schema.sObjectField>{Account.npe01__SYSTEM_AccountType__c}, Contact.AccountId);
 
-        return new UTIL_Finder(Contact.getSObjectType()).withSelectFields(contactFields);
+        return contactFinder;
     }
 
     public static UTIL_Finder createAccountFinder() {
@@ -465,10 +470,11 @@ public class UTIL_UnitTestData_TEST {
             Account.Number_of_Household_Members__c,
             Account.BillingLatitude,
             Account.BillingLongitude,
+            Account.Type,
             Account.npo02__NumberOfClosedOpps__c
         };
 
-        return new UTIL_Finder(Account.getSObjectType()).withSelectFields(accountFields);
+        return new UTIL_Finder(Account.sObjectType).withSelectFields(accountFields);
     }
 
     public static UTIL_Finder createAffiliationFinder() {
@@ -482,21 +488,24 @@ public class UTIL_UnitTestData_TEST {
             npe5__Affiliation__c.npe5__Contact__c
         };
 
-        return new UTIL_Finder(npe5__Affiliation__c.getSObjectType()).withSelectFields(affiliationFields);
+        return new UTIL_Finder(npe5__Affiliation__c.sObjectType).withSelectFields(affiliationFields);
     }
 
     public static UTIL_Finder createAddressFinder() {
         final Set<Schema.sObjectField> addressFields = new Set<Schema.sObjectField>{
             Address__c.Id,
             Address__c.Default_Address__c,
+            Address__c.MailingState__c,
             Address__c.MailingStreet__c,
             Address__c.MailingCity__c,
+            Address__c.MailingPostalCode__c,
             Address__c.Household_Account__c,
             Address__c.Latest_Start_Date__c,
-            Address__c.Latest_End_Date__c
+            Address__c.Latest_End_Date__c,
+            Address__c.MailingCountry__c
         };
 
-        return new UTIL_Finder(Address__c.getSObjectType()).withSelectFields(addressFields);
+        return new UTIL_Finder(Address__c.sObjectType).withSelectFields(addressFields);
     }
 
     public static UTIL_Finder createDataImportFinder() {
@@ -515,7 +524,7 @@ public class UTIL_UnitTestData_TEST {
             DataImport__c.Home_City__c
         };
 
-        return new UTIL_Finder(DataImport__c.getSObjectType()).withSelectFields(dataImportFields);
+        return new UTIL_Finder(DataImport__c.sObjectType).withSelectFields(dataImportFields);
     }
     /**
      * @description Construct a unique last name to be assigned to a User
