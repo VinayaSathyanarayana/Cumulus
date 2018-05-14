@@ -40,7 +40,11 @@ public class AFFL_Affiliations_TEST {
     // if you only want to run one test in this class, fill in its name here.
     // if you want to run all tests, then use '*'
     private static string strTestOnly = '*';
-            
+
+    private static UTIL_Finder contactFinder = UTIL_UnitTestData_TEST.createContactFinder();
+    private static UTIL_Finder accountFinder = UTIL_UnitTestData_TEST.createAccountFinder();
+    private static UTIL_Finder affiliationFinder = UTIL_UnitTestData_TEST.createAffiliationFinder();
+
     /*******************************************************************************************************
     * @description Creates a new contact with an organizational account. Verifies an affiliation was created.
     */
@@ -746,9 +750,9 @@ public class AFFL_Affiliations_TEST {
         update acc;
         test.StopTest();
         
-        queryAffl = [select id, npe5__Status__c, npe5__StartDate__c, npe5__Role__c, 
-            npe5__Organization__c, npe5__EndDate__c, npe5__Contact__c from npe5__Affiliation__c 
-            where npe5__Organization__c = :acc.id ORDER BY npe5__Contact__r.LastName];        
+        queryAffl = affiliationFinder
+            .withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName).withReferenceField(npe5__Affiliation__c.npe5__Contact__c))
+            .findByRelatedToIds(npe5__Affiliation__c.npe5__Organization__c, new Set<Id>{acc.id});
         
         System.assertEquals(2, queryAffl.size(), 'Two affiliations should exist.');
         system.assertEquals(system.label.npe5.DefaultCurrentStatus, queryAffl[0].npe5__Status__c, 'The existing affiliation\'s status should be unchanged.');

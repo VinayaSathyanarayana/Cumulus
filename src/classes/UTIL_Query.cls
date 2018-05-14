@@ -55,6 +55,8 @@ public with sharing class UTIL_Query {
     private String entity = null;
     /** @description WHERE clauses used in the SOQL's WHERE segment */ 
     private String[] whereClauses = new String[0];
+    /** @description ORDER BY clauses used in the SOQL's ORDER BY segment */ 
+    private String orderBy;
     /** @description Indicates if toLabel() should be used on the Salutation field  */ 
     private Boolean isToLabelSalutation = false;
 
@@ -81,7 +83,17 @@ public with sharing class UTIL_Query {
     public UTIL_Query withSelectFields(String[] fieldNames) {
         selectFields.addAll(fieldNames);            
         return this;
-    }  
+    }
+
+    /*********************************************************************************************************
+    * @description Registers ORDER BY Field
+    * @param fieldName Name of the field to order by
+    * @return UTIL_Query The instance of the Query builder
+    */
+    public UTIL_Query withOrderBy(String orderBy) {
+        this.orderBy = orderBy;            
+        return this;
+    }
 
     /*********************************************************************************************************
     * @description Indicates to use toLabel() on the Salutation field
@@ -147,8 +159,8 @@ public with sharing class UTIL_Query {
         }
 
         return String.format(
-            'SELECT {0} FROM {1} {2}',
-            new String[] { String.join(uniqueSelectFields, ', '), entity, buildWhereClause() }
+            'SELECT {0} FROM {1} {2} {3}',
+            new String[] { String.join(uniqueSelectFields, ', '), entity, buildWhereClause(), buildOrderByClause()}
         ).trim();
     }
 
@@ -210,5 +222,17 @@ public with sharing class UTIL_Query {
         }
         
         return String.isBlank(soqlWhere) ? '' : 'WHERE ' + soqlWhere;
-    }  
+    }
+
+    /*********************************************************************************************************
+    * @description Builds the ORDER BY
+    * @return String The ORDER BY
+    */
+    private String buildOrderByClause() {
+        if (String.isEmpty(orderBy)) {
+            return '';
+        }
+
+        return ' ORDER BY ' + orderBy;
+    }
 }

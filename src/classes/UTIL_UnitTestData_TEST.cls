@@ -120,7 +120,7 @@ public class UTIL_UnitTestData_TEST {
     }
     
     public static Contact getContact() {
-    	return new Contact (
+        return new Contact (
                 FirstName = CAO_Constants.CONTACT_FIRSTNAME_FOR_TESTS,
                 LastName = CAO_Constants.CONTACT_LASTNAME_FOR_TESTS,
                 npe01__Private__c = false,
@@ -273,9 +273,9 @@ public class UTIL_UnitTestData_TEST {
                 npe01__SYSTEM_AccountType__c = strType
             );
             if (strType != null) {
-            	newAcct.npe01__SYSTEMIsIndividual__c = true;
-            	if (strType == CAO_Constants.BUCKET_ORGANIZATION_TYPE)
-            	   newAcct.name = CAO_Constants.BUCKET_ACCOUNT_NAME;
+                newAcct.npe01__SYSTEMIsIndividual__c = true;
+                if (strType == CAO_Constants.BUCKET_ORGANIZATION_TYPE)
+                   newAcct.name = CAO_Constants.BUCKET_ACCOUNT_NAME;
             }
             AcctsToAdd.add (newAcct);
         }
@@ -424,8 +424,99 @@ public class UTIL_UnitTestData_TEST {
         System.runAs(u) {}
 
         return u;      
-    } 
+    }
 
+    public static UTIL_Finder createContactFinder() {
+        final Set<Schema.sObjectField> contactFields = new Set<Schema.sObjectField>{
+            Contact.Id,
+            Contact.FirstName,
+            Contact.LastName,
+            Contact.AccountId, 
+            Contact.is_Address_Override__c,
+            Contact.Current_Address__c,
+            Contact.MailingStreet,
+            Contact.MailingCity,
+            Contact.MailingState,
+            Contact.MailingPostalCode,
+            Contact.MailingCountry,
+            Contact.Primary_Affiliation__c,
+            Contact.npo02__TotalOppAmount__c,
+            Account.npe01__SYSTEM_AccountType__c
+        };
+
+        return new UTIL_Finder(Contact.getSObjectType()).withSelectFields(contactFields);
+    }
+
+    public static UTIL_Finder createAccountFinder() {
+        final Set<Schema.sObjectField> accountFields = new Set<Schema.sObjectField>{
+            Account.Id,
+            Account.Name,
+            Account.BillingStreet,
+            Account.BillingCity,
+            Account.BillingState,
+            Account.BillingPostalCode,
+            Account.BillingCountry,
+            Account.npe01__SYSTEM_AccountType__c,
+            Account.npo02__SYSTEM_CUSTOM_NAMING__c,
+            Account.npe01__SYSTEMIsIndividual__c,
+            Account.npe01__One2OneContact__c,
+            Account.npo02__Formal_Greeting__c,
+            Account.npo02__Informal_Greeting__c,
+            Account.Number_of_Household_Members__c,
+            Account.BillingLatitude,
+            Account.BillingLongitude,
+            Account.npo02__NumberOfClosedOpps__c
+        };
+
+        return new UTIL_Finder(Account.getSObjectType()).withSelectFields(accountFields);
+    }
+
+    public static UTIL_Finder createAffiliationFinder() {
+        final Set<Schema.sObjectField> affiliationFields = new Set<Schema.sObjectField>{
+            npe5__Affiliation__c.Id,
+            npe5__Affiliation__c.npe5__Status__c,
+            npe5__Affiliation__c.npe5__StartDate__c,
+            npe5__Affiliation__c.npe5__Role__c, 
+            npe5__Affiliation__c.npe5__Organization__c,
+            npe5__Affiliation__c.npe5__EndDate__c,
+            npe5__Affiliation__c.npe5__Contact__c
+        };
+
+        return new UTIL_Finder(npe5__Affiliation__c.getSObjectType()).withSelectFields(affiliationFields);
+    }
+
+    public static UTIL_Finder createAddressFinder() {
+        final Set<Schema.sObjectField> addressFields = new Set<Schema.sObjectField>{
+            Address__c.Id,
+            Address__c.Default_Address__c,
+            Address__c.MailingStreet__c,
+            Address__c.MailingCity__c,
+            Address__c.Household_Account__c,
+            Address__c.Latest_Start_Date__c,
+            Address__c.Latest_End_Date__c
+        };
+
+        return new UTIL_Finder(Address__c.getSObjectType()).withSelectFields(addressFields);
+    }
+
+    public static UTIL_Finder createDataImportFinder() {
+        final Set<Schema.sObjectField> dataImportFields = new Set<Schema.sObjectField>{
+            DataImport__c.Contact1Imported__c,
+            DataImport__c.Contact1ImportStatus__c,
+            DataImport__c.HouseholdAccountImported__c,
+            DataImport__c.Contact2Imported__c,
+            DataImport__c.Contact2ImportStatus__c,
+            DataImport__c.Account1Imported__c,
+            DataImport__c.Account1ImportStatus__c,
+            DataImport__c.Account2Imported__c,
+            DataImport__c.Account2ImportStatus__c,
+            DataImport__c.HomeAddressImported__c,
+            DataImport__c.HomeAddressImportStatus__c,
+            DataImport__c.Home_City__c
+        };
+
+        return new UTIL_Finder(DataImport__c.getSObjectType()).withSelectFields(dataImportFields);
+    }
     /**
      * @description Construct a unique last name to be assigned to a User
      * @return String
@@ -509,9 +600,9 @@ public class UTIL_UnitTestData_TEST {
         // set each contact's account, and give them a unique name and mailing address
         for (integer i = 0; i < cAcc; i++) {
             for (integer j = 0; j < cCon; j++) {
-            	integer iCon = (i * cCon) + j;
-            	Contact con = listConT[iCon]; 
-            	con.Firstname = 'TestFirstname' + iUnique + iCon;
+                integer iCon = (i * cCon) + j;
+                Contact con = listConT[iCon]; 
+                con.Firstname = 'TestFirstname' + iUnique + iCon;
                 con.Lastname = 'TestLastname' + iUnique + iCon;
                 con.AccountId = listAccT[i].Id;
                 con.MailingStreet = 'Street' + iUnique + iCon;

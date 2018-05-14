@@ -42,24 +42,28 @@ private with sharing class ACCT_HHAccounts_TEST {
     * if you want to run all tests, then use '*'
     */
     private static string strTestOnly = '*';
-    
-    	
+
+    private static UTIL_Finder contactFinder =
+        UTIL_UnitTestData_TEST.createContactFinder();
+    private static UTIL_Finder accountFinder =
+        UTIL_UnitTestData_TEST.createAccountFinder();
+
     /*********************************************************************************************************
     * @description
     * operation:
     *     create N new contacts, no accounts 
     * verify:
     *   N hh accounts created
-	*	accounts' name and naming fields set
-	*	hh accounts' primary contact set to new contact
+    *   accounts' name and naming fields set
+    *   hh accounts' primary contact set to new contact
     **********************************************************************************************************/            
     static testMethod void NewContactsNoAccounts() {
         //skip the test if Advancement is installed
         if(ADV_PackageInfo_SVC.useAdv()) return;
         
-    	if (strTestOnly != '*' && strTestOnly != 'NewContactsNoAccounts') return;
-    	
-    	//Using the API class just to give it test coverage.
+        if (strTestOnly != '*' && strTestOnly != 'NewContactsNoAccounts') return;
+        
+        //Using the API class just to give it test coverage.
         npe01__Contacts_and_Orgs_Settings__c contactSettingsForTests = UTIL_CustomSettings_API.getContactsSettings();
     
         list<Contact> listCon = UTIL_UnitTestData_TEST.CreateMultipleTestContacts(5);
@@ -74,7 +78,7 @@ private with sharing class ACCT_HHAccounts_TEST {
         system.assertEquals(5, listAcc.size());
         
         for (Account acc : listAcc) {
-        	system.assertNotEquals(null, acc.npe01__One2OneContact__c);
+            system.assertNotEquals(null, acc.npe01__One2OneContact__c);
             system.assertNotEquals(null, acc.npo02__Formal_Greeting__c);
             system.assertNotEquals(null, acc.npo02__Informal_Greeting__c);
             system.assertEquals(null, acc.npo02__SYSTEM_CUSTOM_NAMING__c);
@@ -82,7 +86,7 @@ private with sharing class ACCT_HHAccounts_TEST {
             system.assertEquals(true, acc.npe01__SYSTEMIsIndividual__c);
             system.assertEquals(1, acc.Number_of_Household_Members__c);
             if (acc.npe01__One2OneContact__c == listCon[1].Id) {
-            	system.assertEquals(listCon[1].LastName + ' Household', acc.Name);
+                system.assertEquals(listCon[1].LastName + ' Household', acc.Name);
                 system.assertEquals(listCon[1].FirstName, acc.npo02__Informal_Greeting__c);
                 system.assertEquals(listCon[1].FirstName + ' ' + listCon[1].LastName, acc.npo02__Formal_Greeting__c);
             }
@@ -153,7 +157,7 @@ private with sharing class ACCT_HHAccounts_TEST {
             system.assertEquals(true, acc.npe01__SYSTEMIsIndividual__c);
             // single contact
             if (acc.Id == listCon[4].AccountId) {
-            	system.assertEquals(listCon[4].Id, acc.npe01__One2OneContact__c);
+                system.assertEquals(listCon[4].Id, acc.npe01__One2OneContact__c);
                 system.assertEquals(listCon[4].LastName + ' Household', acc.Name);
                 system.assertEquals(listCon[4].FirstName, acc.npo02__Informal_Greeting__c);
                 system.assertEquals(listCon[4].FirstName + ' ' + listCon[4].LastName, acc.npo02__Formal_Greeting__c);
@@ -446,7 +450,7 @@ private with sharing class ACCT_HHAccounts_TEST {
         insert listCon;
         
         // refresh our contacts to get their accounts
-        listCon = [select Name, FirstName, LastName, AccountId from Contact order by FirstName];
+        listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
         system.assertEquals(5, listCon.size());
         system.assertNotEquals(null, listCon[0].AccountId);        
         
@@ -473,8 +477,7 @@ private with sharing class ACCT_HHAccounts_TEST {
         update listCon;
         test.stopTest();    // to flush any future calls.
         
-        listAcc = [select Name, npe01__SYSTEM_AccountType__c, npo02__SYSTEM_CUSTOM_NAMING__c, npe01__SYSTEMIsIndividual__c, 
-            npe01__One2OneContact__c, npo02__Formal_Greeting__c, npo02__Informal_Greeting__c, Number_of_Household_Members__c from Account order by Name];
+        listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name)).findAll();
         system.assertEquals(3, listAcc.size());
         
         for (Account acc : listAcc) {
@@ -616,7 +619,7 @@ private with sharing class ACCT_HHAccounts_TEST {
         insert listCon;
         
         // refresh our contacts to get their accounts
-        listCon = [select Name, FirstName, LastName, AccountId from Contact order by Name];
+        listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
         system.assertEquals(5, listCon.size());
         system.assertNotEquals(null, listCon[0].AccountId);        
         
@@ -634,7 +637,7 @@ private with sharing class ACCT_HHAccounts_TEST {
         
         Test.startTest();      
         delete listConDel;
-        list<Contact> listCon2 = [select Id, Name from Contact order by Name];
+        list<Contact> listCon2 = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
         system.assertEquals(1, listCon2.size());
         list<Account> listAcc2 = [select Id, Name from Account where id = :listAcc[0].Id];
         system.assertEquals(1, listAcc2.size());
@@ -648,7 +651,7 @@ private with sharing class ACCT_HHAccounts_TEST {
         undelete listCon[1];
         test.stopTest();    // to flush any future calls.
        
-        listCon = [select Id, FirstName, LastName, AccountId from Contact order by Name];
+        listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
         system.assertEquals(2, listCon.size());
         
         listAcc = [select Name, npe01__SYSTEM_AccountType__c, npo02__SYSTEM_CUSTOM_NAMING__c, npe01__SYSTEMIsIndividual__c, 

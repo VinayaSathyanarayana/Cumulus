@@ -42,6 +42,13 @@ public with sharing class ADDR_Addresses_TEST2 {
     */
     private static string strTestOnly = '*';
 
+    private static UTIL_Finder contactFinder =
+        UTIL_UnitTestData_TEST.createContactFinder();
+    private static UTIL_Finder accountFinder =
+        UTIL_UnitTestData_TEST.createAccountFinder();
+    private static UTIL_Finder addressFinder =
+        UTIL_UnitTestData_TEST.createAddressFinder();
+
     /*********************************************************************************************************
     * @description Holds the number of Households to create in tests.
     */
@@ -1350,12 +1357,12 @@ public with sharing class ADDR_Addresses_TEST2 {
         Test.stopTest();
 
         // verify results
-        listAcc = [select Id, Name, BillingStreet, BillingCity, BillingState, BillingPostalCode, BillingCountry, BillingLatitude, BillingLongitude from Account order by Account.Name];
+        listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Id)).findAll();
         system.assertEquals(cAcc, listAcc.size());
-        list<Address__c> listAddr = [select Id, Default_Address__c, MailingStreet__c, MailingCity__c, Household_Account__c, Latest_Start_Date__c, Latest_End_Date__c from Address__c order by Household_Account__r.Name];
+        List<Address__c> listAddr = addressFinder.withOrderBy(new UTIL_Finder.OrderBy(Address__c.Household_Account__c)).findAll();
         system.assertEquals(cAcc, listAddr.size());
-        listCon = [select Id, AccountId, Name, Current_Address__c, MailingStreet, MailingCity from Contact order by Account.Name];
-        system.assertEquals(cAcc, listCon.size());        
+        listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.AccountId)).findAll();
+        system.assertEquals(cAcc, listCon.size());
         
         for (integer i = 0; i < cAcc; i++) {
             Account acc = listAcc[i];
@@ -1412,11 +1419,11 @@ public with sharing class ADDR_Addresses_TEST2 {
         Test.stopTest();
         
         // verify results
-        listAcc = [select Id, Name, BillingStreet, BillingCity, BillingState, BillingPostalCode, BillingCountry, BillingLatitude, BillingLongitude from Account order by Account.Name];
+        listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Id)).findAll();
         system.assertEquals(cAcc, listAcc.size());
-        listAddrT = [select Id, Default_Address__c, MailingStreet__c, MailingCity__c, Household_Account__c, Latest_Start_Date__c, Latest_End_Date__c from Address__c order by Household_Account__r.Name];
+        listAddrT = addressFinder.withOrderBy(new UTIL_Finder.OrderBy(Address__c.Household_Account__c)).findAll();
         system.assertEquals(cAcc, listAddrT.size());
-        listCon = [select Id, AccountId, Name, Current_Address__c, MailingStreet, MailingCity from Contact order by Account.Name];
+        listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.AccountId)).findAll();
         system.assertEquals(cAcc, listCon.size());        
         
         for (integer i = 0; i < cAcc; i++) {

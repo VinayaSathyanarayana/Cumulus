@@ -49,7 +49,10 @@ private with sharing class ACCT_AccountMerge_TEST {
     * if you want to run all tests, then use '*'
     */
     private static string strTestOnly = '*';
-    
+
+    private static UTIL_Finder contactFinder = UTIL_UnitTestData_TEST.createContactFinder();
+    private static UTIL_Finder accountFinder = UTIL_UnitTestData_TEST.createAccountFinder();
+
     /*******************************************************************************************************
     * @description set the Account Model processor for the test.
     * @param strProcessor The Processor to set
@@ -99,13 +102,8 @@ private with sharing class ACCT_AccountMerge_TEST {
         Test.stopTest();
 
         // reload our contacts and accounts
-        list<Account> listAcc = new list<Account>([select Id, Name, npo02__Formal_Greeting__c, npo02__Informal_Greeting__c, 
-            npo02__NumberOfClosedOpps__c, npe01__One2OneContact__c, Number_Of_Household_Members__c,
-            BillingStreet, BillingCity, BillingState, BillingPostalCode, BillingCountry 
-            from Account order by Id]);
-        list<Contact> listCon = [select Id, Firstname, AccountId, 
-            is_Address_Override__c, Current_Address__c, MailingStreet, MailingCity, MailingState, MailingPostalCode, MailingCountry 
-            from Contact order by Firstname];
+        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
             
         // verify the accounts and contacts
         system.assertEquals(1, listAcc.size());
@@ -191,13 +189,8 @@ private with sharing class ACCT_AccountMerge_TEST {
         Test.stopTest();
 
         // reload our contacts and accounts
-        list<Account> listAcc = new list<Account>([select Id, Name, npo02__Formal_Greeting__c, npo02__Informal_Greeting__c, 
-            npo02__NumberOfClosedOpps__c, npe01__One2OneContact__c, Number_Of_Household_Members__c,
-            BillingStreet, BillingCity, BillingState, BillingPostalCode, BillingCountry 
-            from Account order by Id]);
-        list<Contact> listCon = [select Id, Firstname, AccountId, 
-            is_Address_Override__c, Current_Address__c, MailingStreet, MailingCity, MailingState, MailingPostalCode, MailingCountry 
-            from Contact order by Firstname];
+        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Id)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
             
         // verify the accounts and contacts
         system.assertEquals(1, listAcc.size());
@@ -262,9 +255,8 @@ private with sharing class ACCT_AccountMerge_TEST {
         Test.stopTest();
 
         // reload our contacts and accounts
-        listAcc = new list<Account>([select Id, Name, npo02__Formal_Greeting__c, npo02__Informal_Greeting__c, 
-            npo02__NumberOfClosedOpps__c, npe01__One2OneContact__c from Account order by Id]);
-        listCon = [select Id, Firstname, AccountId from Contact order by Firstname];
+        listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Id)).findAll();
+        listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
             
         // verify the accounts and contacts
         system.assertEquals(1, listAcc.size());
@@ -339,9 +331,7 @@ private with sharing class ACCT_AccountMerge_TEST {
         Test.stopTest();
 
         // reload our accounts
-        listAcc = new list<Account>([select Id, Name, 
-            BillingStreet, BillingCity, BillingState, BillingPostalCode, BillingCountry 
-            from Account order by Id]);
+        listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Id)).findAll();
             
         // verify the accounts 
         system.assertEquals(1, listAcc.size());
@@ -439,15 +429,10 @@ private with sharing class ACCT_AccountMerge_TEST {
         Test.stopTest();
 
         // reload our contacts and accounts
-        list<Account> listAcc = new list<Account>([select Id, Name, npo02__Formal_Greeting__c, npo02__Informal_Greeting__c, 
-            npo02__NumberOfClosedOpps__c, 
-            BillingStreet, BillingCity, BillingState, BillingPostalCode, BillingCountry 
-            from Account order by Id]);
+        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Id)).findAll();
         system.assertEquals(1, listAcc.size());
         accWinner = listAcc[0];
-        list<Contact> listCon = [select Id, Firstname, AccountId, 
-            is_Address_Override__c, Current_Address__c, MailingStreet, MailingCity, MailingState, MailingPostalCode, MailingCountry 
-            from Contact order by Firstname];
+        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
             
         // verify the contacts belong to correct account.
         system.assertEquals(listCon[0].AccountId, accWinner.Id);
