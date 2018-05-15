@@ -41,78 +41,78 @@ private class UTIL_OrderBy_TEST {
     private static final UTIL_OrderBy.NullsOrder NULLS_LAST = UTIL_OrderBy.NullsOrder.LAST;
      
     @isTest static void toStringReturnsOrderByForField() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name);
 
         System.assertEquals('Name', field.toString());
     }
 
     @isTest static void toStringReturnsOrderByForFieldAndDescSortOrder() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_DESC);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_DESC);
 
         System.assertEquals('Name DESC', field.toString());
     }
 
     @isTest static void toStringReturnsOrderByForFieldAndAscSortOrder() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_ASC);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_ASC);
 
         System.assertEquals('Name', field.toString());
     }
 
     @isTest static void toStringReturnsOrderByForFieldAndSortOrderAndNullOrderLast() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_DESC, NULLS_LAST);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_DESC, NULLS_LAST);
 
         System.assertEquals('Name DESC NULLS LAST', field.toString());
     }
 
     @isTest static void toStringReturnsOrderByForFieldAndSortOrderAndNullOrderFirst() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_DESC, NULLS_FIRST);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_DESC, NULLS_FIRST);
 
         System.assertEquals('Name DESC', field.toString());
     }
 
     @isTest static void toStringReturnsOrderByForRelationshipField() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name).withRelationship(Contact.AccountId);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name).fromRelationship(Contact.AccountId);
 
         System.assertEquals('Account.Name', field.toString());
     }
 
     @isTest static void getFieldNameReturnsName() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name);
 
         System.assertEquals('Name', field.getFieldName());
     }
 
     @isTest static void getFieldNameReturnsNameForTheRelationshipField() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name).withRelationship(Contact.AccountId);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name).fromRelationship(Contact.AccountId);
 
-        System.assertEquals('Account.Name', field.getFieldName());
+        System.assertEquals('Name', field.getFieldName());
     }
 
     @isTest static void isNameFieldReturnsTrueForNameField() {
-        System.assert(new UTIL_OrderBy.Field(Account.Name).isNameField());
-        System.assert(new UTIL_OrderBy.Field(Contact.Name).isNameField());
+        System.assert(new UTIL_OrderBy.FieldExpression(Account.Name).isNameField());
+        System.assert(new UTIL_OrderBy.FieldExpression(Contact.Name).isNameField());
     }
 
     @isTest static void isNameFieldReturnsFalseWhenFieldIsNotName() {
-        System.assert(!new UTIL_OrderBy.Field(Account.BillingCity).isNameField());
-        System.assert(!new UTIL_OrderBy.Field(Contact.FirstName).isNameField());
-        System.assert(!new UTIL_OrderBy.Field(Contact.LastName).isNameField());
+        System.assert(!new UTIL_OrderBy.FieldExpression(Account.BillingCity).isNameField());
+        System.assert(!new UTIL_OrderBy.FieldExpression(Contact.FirstName).isNameField());
+        System.assert(!new UTIL_OrderBy.FieldExpression(Contact.LastName).isNameField());
     }
 
     @isTest static void isSortDescReturnsTrueForDescSortOrder() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_DESC);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_DESC);
 
         System.assert(field.isSortDesc());
     }
 
     @isTest static void isSortDescReturnsFalseForAscSortOrder() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_ASC);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_ASC);
 
         System.assert(!field.isSortDesc());
     }
 
     @isTest static void compareToReturnsZeroWhenValuesAreTheSame() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name);
         UTIL_OrderBy.SortableRecord record = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
         UTIL_OrderBy.SortableRecord other = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
 
@@ -120,7 +120,7 @@ private class UTIL_OrderBy_TEST {
     }
 
     @isTest static void compareToIsCaseSensitive() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name);
         UTIL_OrderBy.SortableRecord record = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
         UTIL_OrderBy.SortableRecord other = new UTIL_OrderBy.SortableRecord(new Account(Name = 'FOO'), field);
 
@@ -128,7 +128,7 @@ private class UTIL_OrderBy_TEST {
     }
 
     @isTest static void compareToReturnsNegativeNumberWhenValuePreceedsOther() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name);
         UTIL_OrderBy.SortableRecord record = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
         UTIL_OrderBy.SortableRecord other = new UTIL_OrderBy.SortableRecord(new Account(Name = 'xyz'), field);
 
@@ -136,7 +136,7 @@ private class UTIL_OrderBy_TEST {
     }
 
     @isTest static void compareToReturnsPositiveNumberForDescOrder() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_DESC);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_DESC);
         UTIL_OrderBy.SortableRecord record = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
         UTIL_OrderBy.SortableRecord other = new UTIL_OrderBy.SortableRecord(new Account(Name = 'xyz'), field);
 
@@ -144,7 +144,7 @@ private class UTIL_OrderBy_TEST {
     }
 
     @isTest static void compareToReturnsPositiveNumberWhenValueFollowsOther() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name);
         UTIL_OrderBy.SortableRecord record = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
         UTIL_OrderBy.SortableRecord other = new UTIL_OrderBy.SortableRecord(new Account(Name = 'abc'), field);
 
@@ -152,7 +152,7 @@ private class UTIL_OrderBy_TEST {
     }
 
     @isTest static void compareToReturnsNegativeNumberForDescOrder() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_DESC);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_DESC);
         UTIL_OrderBy.SortableRecord record = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
         UTIL_OrderBy.SortableRecord other = new UTIL_OrderBy.SortableRecord(new Account(Name = 'abc'), field);
 
@@ -160,7 +160,7 @@ private class UTIL_OrderBy_TEST {
     }
 
     @isTest static void compareToReturnsNegativeNumberWhenOtherIsNullAscOrderNullsLast() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_ASC, NULLS_LAST);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_ASC, NULLS_LAST);
         UTIL_OrderBy.SortableRecord record = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
         UTIL_OrderBy.SortableRecord other = new UTIL_OrderBy.SortableRecord(new Account(), field);
 
@@ -168,7 +168,7 @@ private class UTIL_OrderBy_TEST {
     }
 
     @isTest static void compareToReturnsPostiveNumberWhenOtherIsNullAscOrderNullsFirst() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_ASC, NULLS_FIRST);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_ASC, NULLS_FIRST);
         UTIL_OrderBy.SortableRecord record = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
         UTIL_OrderBy.SortableRecord other = new UTIL_OrderBy.SortableRecord(new Account(), field);
 
@@ -176,7 +176,7 @@ private class UTIL_OrderBy_TEST {
     }
 
     @isTest static void compareToReturnsNegativeNumberWhenOtherIsNullDescOrderNullsLast() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_DESC, NULLS_LAST);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_DESC, NULLS_LAST);
         UTIL_OrderBy.SortableRecord record = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
         UTIL_OrderBy.SortableRecord other = new UTIL_OrderBy.SortableRecord(new Account(), field);
 
@@ -184,7 +184,7 @@ private class UTIL_OrderBy_TEST {
     }
 
     @isTest static void compareToReturnsPositiveNumberWhenOtherIsNullDescOrderNullsFirst() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_DESC, NULLS_FIRST);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_DESC, NULLS_FIRST);
         UTIL_OrderBy.SortableRecord record = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
         UTIL_OrderBy.SortableRecord other = new UTIL_OrderBy.SortableRecord(new Account(), field);
 
@@ -192,7 +192,7 @@ private class UTIL_OrderBy_TEST {
     }
 
     @isTest static void compareToReturnsPositiveNumberWhenValueIsNullAscOrderNullsLast() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_ASC, NULLS_LAST);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_ASC, NULLS_LAST);
         UTIL_OrderBy.SortableRecord record = new UTIL_OrderBy.SortableRecord(new Account(), field);
         UTIL_OrderBy.SortableRecord other = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
 
@@ -200,16 +200,16 @@ private class UTIL_OrderBy_TEST {
     }
 
     @isTest static void compareToReturnsNegativeNumberWhenValueIsNullAscOrderNullsFirst() {
-        UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name, SORT_ASC, NULLS_FIRST);
+        UTIL_OrderBy.FieldExpression field = new UTIL_OrderBy.FieldExpression(Account.Name, SORT_ASC, NULLS_FIRST);
         UTIL_OrderBy.SortableRecord record = new UTIL_OrderBy.SortableRecord(new Account(), field);
         UTIL_OrderBy.SortableRecord other = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
 
         System.assert(record.compareTo(other) < 0);
     }
 
-    @isTest static void sortSortsRecordsManuallyByNameDesc() {
+    @isTest static void sortOrdersRecordsManuallyByNameDesc() {
         UTIL_OrderBy orderBy = new UTIL_OrderBy();
-        orderBy.add(new UTIL_OrderBy.Field(Account.Name, SORT_DESC));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Account.Name, SORT_DESC));
         orderBy.isPostSort = true;
 
         List<sObject> records = new List<sObject>{
@@ -224,9 +224,9 @@ private class UTIL_OrderBy_TEST {
         System.assertEquals('abc', (String) sortedRecords[2].get('Name'));
     }
 
-    @isTest static void sortSortsRecordsManuallyWhenTheFieldIsNotSortable() {
+    @isTest static void sortOrdersRecordsManuallyWhenTheFieldIsNotSortable() {
         UTIL_OrderBy orderBy = new UTIL_OrderBy();
-        orderBy.add(new UTIL_OrderBy.Field(Contact.LastName));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.LastName));
         orderBy.isPostSort = true;
 
         List<sObject> records = new List<sObject>{
@@ -241,10 +241,10 @@ private class UTIL_OrderBy_TEST {
         System.assertEquals('xyz', (String) sortedRecords[2].get('LastName'));
     }
 
-    @isTest static void sortSortsRecordsManuallyWhenFieldsAreNotSortable() {
+    @isTest static void sortOrdersRecordsManuallyWhenFieldsAreNotSortable() {
         UTIL_OrderBy orderBy = new UTIL_OrderBy();
-        orderBy.add(new UTIL_OrderBy.Field(Contact.LastName));
-        orderBy.add(new UTIL_OrderBy.Field(Contact.FirstName));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.LastName));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.FirstName));
         orderBy.isPostSort = true;
 
         List<sObject> records = new List<sObject>{
@@ -261,9 +261,9 @@ private class UTIL_OrderBy_TEST {
         System.assertEquals('xyz', (String) sortedRecords[3].get('LastName'));
     }
 
-    @isTest static void sortSortsRecordsManuallyWhenTheValueIsNullForNullsFirst() {
+    @isTest static void sortOrdersRecordsManuallyWhenTheValueIsNullForNullsFirst() {
         UTIL_OrderBy orderBy = new UTIL_OrderBy();
-        orderBy.add(new UTIL_OrderBy.Field(Contact.LastName, SORT_ASC, NULLS_FIRST));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.LastName, SORT_ASC, NULLS_FIRST));
         orderBy.isPostSort = true;
 
         List<sObject> records = new List<sObject>{
@@ -280,9 +280,9 @@ private class UTIL_OrderBy_TEST {
         System.assertEquals('xyz', (String) sortedRecords[3].get('LastName'));
     }
 
-    @isTest static void sortSortsRecordsManuallyWhenTheValueIsNullForNullsLast() {
+    @isTest static void sortOrdersRecordsManuallyWhenTheValueIsNullForNullsLast() {
         UTIL_OrderBy orderBy = new UTIL_OrderBy();
-        orderBy.add(new UTIL_OrderBy.Field(Contact.LastName, SORT_ASC, NULLS_LAST));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.LastName, SORT_ASC, NULLS_LAST));
         orderBy.isPostSort = true;
 
         List<sObject> records = new List<sObject>{
@@ -299,7 +299,7 @@ private class UTIL_OrderBy_TEST {
         System.assertEquals('rafael', (String) sortedRecords[3].get('FirstName'));
     }
 
-    @isTest static void sortSortsRecordsAsTheSoqlOrderBy() {
+    @isTest static void sortOrdersRecordsTheSameAsSoql() {
         List<sObject> records = new List<sObject>{
             new Account(Name = 'foo asc'),
             new Account(Name = 'xyz asc'),
@@ -311,7 +311,7 @@ private class UTIL_OrderBy_TEST {
         System.assertEquals(records.size(), actualRecords.size());
 
         UTIL_OrderBy orderBy = new UTIL_OrderBy();
-        orderBy.add(new UTIL_OrderBy.Field(Account.Name));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Account.Name));
         orderBy.isPostSort = true;
 
         List<sObject> sortedRecords = orderBy.sort(records);
@@ -322,7 +322,7 @@ private class UTIL_OrderBy_TEST {
         }
     }
 
-    @isTest static void sortSortsRecordsAsTheSoqlOrderByDesc() {
+    @isTest static void sortOrdersRecordsTheSameAsSoqlOrderByDesc() {
         List<sObject> records = new List<sObject>{
             new Account(Name = 'foo desc'),
             new Account(Name = 'xyz desc'),
@@ -334,7 +334,7 @@ private class UTIL_OrderBy_TEST {
         System.assertEquals(records.size(), actualRecords.size());
 
         UTIL_OrderBy orderBy = new UTIL_OrderBy();
-        orderBy.add(new UTIL_OrderBy.Field(Account.Name, SORT_DESC));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Account.Name, SORT_DESC));
         orderBy.isPostSort = true;
 
         List<sObject> sortedRecords = orderBy.sort(records);
@@ -345,7 +345,7 @@ private class UTIL_OrderBy_TEST {
         }
     }
 
-    @isTest static void sortSortsRecordsAsTheSoqlOrderByMultipleFields() {
+    @isTest static void sortOrdersRecordsTheSameAsSoqlWithMultipleFields() {
         List<sObject> records = new List<sObject>{
             new Contact(LastName = 'Smith', FirstName = 'John', Title = 'Administrator'),
             new Contact(LastName = 'Smith', FirstName = 'Jane', Title = 'Business Manager'),
@@ -363,9 +363,9 @@ private class UTIL_OrderBy_TEST {
         System.assertEquals(records.size(), actualRecords.size());
 
         UTIL_OrderBy orderBy = new UTIL_OrderBy();
-        orderBy.add(new UTIL_OrderBy.Field(Contact.LastName));
-        orderBy.add(new UTIL_OrderBy.Field(Contact.FirstName));
-        orderBy.add(new UTIL_OrderBy.Field(Contact.Title));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.LastName));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.FirstName));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.Title));
         orderBy.isPostSort = true;
 
         List<sObject> sortedRecords = orderBy.sort(records);
@@ -376,11 +376,55 @@ private class UTIL_OrderBy_TEST {
         }
     }
 
+    @isTest static void sortOrdersRecordsTheSameAsSoqlWithRelationshipFields() {
+        List<sObject> accounts = new List<sObject>{
+            new Account(Name = 'foo related'),
+            new Account(Name = 'xyz related'),
+            new Account(Name = 'abc related')
+        };
+        insert accounts;
+
+        List<sObject> records = new List<sObject>{
+            new Contact(AccountId = accounts[0].Id, LastName = 'Smith', FirstName = 'John', Title = 'Administrator'),
+            new Contact(AccountId = accounts[1].Id, LastName = 'Smith', FirstName = 'Jane', Title = 'Business Manager'),
+            new Contact(AccountId = accounts[2].Id, LastName = 'Clark', FirstName = 'Kent', Title = 'Business Manager'),
+            new Contact(AccountId = accounts[0].Id, LastName = 'Clark', FirstName = 'Kent', Title = 'Administrator'),
+            new Contact(AccountId = accounts[1].Id, LastName = 'Clark', FirstName = 'Abby', Title = 'Executive')
+        };
+        insert records;
+        records = [
+            SELECT Name, FirstName, LastName, Title, AccountId, Account.Name
+            FROM Contact 
+        ];
+
+        List<Contact> actualRecords = [
+            SELECT Name, FirstName, LastName, Title, AccountId, Account.Name
+            FROM Contact 
+            ORDER BY Account.Name, LastName, FirstName, Title
+        ];
+        System.assertEquals(records.size(), actualRecords.size());
+
+        UTIL_OrderBy orderBy = new UTIL_OrderBy();
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Account.Name).fromRelationship(Contact.AccountId));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.LastName));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.FirstName));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.Title));
+        orderBy.isPostSort = true;
+
+        List<sObject> sortedRecords = orderBy.sort(records);
+        for (Integer i = 0; i < actualRecords.size(); i++) {
+            System.assertEquals(actualRecords[i].LastName, (String) sortedRecords[i].get('LastName'));
+            System.assertEquals(actualRecords[i].FirstName, (String) sortedRecords[i].get('FirstName'));
+            System.assertEquals(actualRecords[i].Title, (String) sortedRecords[i].get('Title'));
+            System.assertEquals(actualRecords[i].AccountId, (Id) sortedRecords[i].get('AccountId'));
+        }
+    }
+
     @isTest static void buildCreatesOrderByClause() {
         UTIL_OrderBy orderBy = new UTIL_OrderBy();
-        orderBy.add(new UTIL_OrderBy.Field(Contact.LastName, SORT_DESC));
-        orderBy.add(new UTIL_OrderBy.Field(Contact.FirstName, SORT_ASC, NULLS_LAST));
-        orderBy.add(new UTIL_OrderBy.Field(Contact.Title));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.LastName, SORT_DESC));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.FirstName, SORT_ASC, NULLS_LAST));
+        orderBy.add(new UTIL_OrderBy.FieldExpression(Contact.Title));
 
         String orderByClause = orderBy.build();
 

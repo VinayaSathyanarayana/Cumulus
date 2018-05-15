@@ -249,7 +249,7 @@ public with sharing class BDI_DataImport_TEST {
         
         // verify only one household account
         list<Account> listAcc = accountFinder
-            .withOrderBy(new UTIL_OrderBy.Field(Account.Name, UTIL_OrderBy.SortingOrder.DESCENDING))
+            .withOrderBy(new UTIL_OrderBy.FieldExpression(Account.Name, UTIL_OrderBy.SortingOrder.DESCENDING))
             .findAll();
         // because c2 is first created as a contact1, it will get a hh account, that will
         // later get orphaned when we move c2 to c1's hh account.
@@ -623,7 +623,7 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals(listCon[3].Primary_Affiliation__c, listAcc[1].Id);
         
         list<npe5__Affiliation__c> listAffl = affiliationFinder
-            .withOrderBy(new UTIL_OrderBy.Field(Contact.Name).withRelationship(npe5__Affiliation__c.npe5__Contact__c))
+            .withOrderBy(new UTIL_OrderBy.FieldExpression(Contact.Name).fromRelationship(npe5__Affiliation__c.npe5__Contact__c))
             .findAll();
         system.assertEquals(2, listAffl.size());
         system.assertEquals(listCon[0].Id, listAffl[0].npe5__Contact__c);
@@ -814,7 +814,7 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals(listDI[0].Home_Country__c, listAddr[0].MailingCountry__c);
         
         list<Account> listAcc = accountFinder
-            .withOrderBy(new UTIL_OrderBy.Field(Account.Name, UTIL_OrderBy.SortingOrder.DESCENDING))
+            .withOrderBy(new UTIL_OrderBy.FieldExpression(Account.Name, UTIL_OrderBy.SortingOrder.DESCENDING))
             .findAll();
         // because c2 is first created as a contact1, it will get a hh account, that will
         // later get orphaned when we move c2 to c1's hh account.

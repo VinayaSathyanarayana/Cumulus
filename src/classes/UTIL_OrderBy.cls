@@ -42,23 +42,23 @@ public with sharing class UTIL_OrderBy {
     private static final Integer SORT_GREATER = 1;
     private static final Integer SORT_LESS = -1;
 
-    private List<Field> fields;
+    private List<FieldExpression> fieldExpressions;
     @TestVisible private Boolean isPostSort = false;
 
     /*********************************************************************************************************
     * @description Constructor
     */
     public UTIL_OrderBy() {
-        fields = new List<Field>();
+        fieldExpressions = new List<FieldExpression>();
     }
 
     /*********************************************************************************************************
-    * @description Adds the field into the Order By fields
-    * @param field The field
+    * @description Adds the field into the Order By fieldExpressions
+    * @param field The field expression
     * @return UTIL_OrderBy The object instance
     */
-    public UTIL_OrderBy add(Field field) {
-        fields.add(field);
+    public UTIL_OrderBy add(FieldExpression field) {
+        fieldExpressions.add(field);
         return this;
     }
 
@@ -69,11 +69,11 @@ public with sharing class UTIL_OrderBy {
     public String build() {
         List<String> orderBy = new List<String>();
 
-        if (fields.isEmpty()) {
+        if (fieldExpressions.isEmpty()) {
             return '';
         }
 
-        for (Field field : fields) {
+        for (FieldExpression field : fieldExpressions) {
             if (!field.isSortable()) {
                 isPostSort = true;
                 return '';
@@ -87,7 +87,7 @@ public with sharing class UTIL_OrderBy {
     }
 
     /*********************************************************************************************************
-    * @description Sorts records by the order by fields
+    * @description Sorts records by the order by fieldExpressions
     * @param records Records to sort
     * @return List<sObject> Sorted records
     */
@@ -97,8 +97,8 @@ public with sharing class UTIL_OrderBy {
         }
 
         List<sObject> sortedRecords = new List<sObject>();
-        for (Integer i = fields.size() - 1; i >= 0; i--) {//we sort from the last order by field to the first?
-            sortedRecords = sort(sortedRecords.isEmpty() ? records : sortedRecords, fields[i]);
+        for (Integer i = fieldExpressions.size() - 1; i >= 0; i--) {
+            sortedRecords = sort(sortedRecords.isEmpty() ? records : sortedRecords, fieldExpressions[i]);
         }
 
         return sortedRecords;
@@ -107,10 +107,10 @@ public with sharing class UTIL_OrderBy {
     /*********************************************************************************************************
     * @description Sorts records by the field value
     * @param records Records to sort
-    * @param field Order By Field
+    * @param field Order By field expression
     * @return List<sObject> Sorted records
     */
-    private List<sObject> sort(List<sObject> records, Field field) {
+    private List<sObject> sort(List<sObject> records, FieldExpression field) {
         List<SortableRecord> sortableRecords = new List<SortableRecord>();
         for (sObject record : records) {
             sortableRecords.add(new SortableRecord(record, field));
@@ -132,19 +132,27 @@ public with sharing class UTIL_OrderBy {
     */
     public class SortableRecord implements Comparable {
         private sObject record;
-        private Field field;
+        private FieldExpression field;
         private String value;
 
         /*********************************************************************************************************
         * @description Constructor
         * @param record The sObject to be sorted
-        * @param fieldName The sObject field name
-        * @param isSortDesc Indicator if sorting is descending
+        * @param field The Order By field expression
         */
-        public SortableRecord(sObject record, Field field) {
+        public SortableRecord(sObject record, FieldExpression field) {
             this.record = record;
             this.field = field;
-            this.value = (String) record.get(field.getFieldName());
+
+			if (field.isRelationshipField()) {
+				sObject referenceSObject = record.getSObject(String.valueOf(field.getReferenceTo()));
+				this.value = referenceSObject == null 
+					? null
+					: (String) referenceSObject.get(field.getFieldName());
+
+			} else {
+				this.value = (String) record.get(field.getFieldName());
+			}
         }
 
         /*********************************************************************************************************
@@ -185,8 +193,9 @@ public with sharing class UTIL_OrderBy {
     /*********************************************************************************************************
     * @description The composite field used in the Order By clause
     */
-    public class Field {
+    public class FieldExpression {
         Schema.sObjectField sObjField;
+        Schema.sObjectField referenceField;
         SortingOrder sortOrder;
         NullsOrder nullOrder;
         String fieldName;
@@ -197,7 +206,7 @@ public with sharing class UTIL_OrderBy {
         * @description Constructor
         * @param sObjField The field
         */
-        public Field(Schema.sObjectField sObjField) {
+        public FieldExpression(Schema.sObjectField sObjField) {
             this(sObjField, null);
         }
 
@@ -206,7 +215,7 @@ public with sharing class UTIL_OrderBy {
         * @param sObjField The field
         * @param sortOrder Sorting order
         */
-        public Field(Schema.sObjectField sObjField, SortingOrder sortOrder) {
+        public FieldExpression(Schema.sObjectField sObjField, SortingOrder sortOrder) {
             this(sObjField, sortOrder, null);
         }
 
@@ -216,7 +225,7 @@ public with sharing class UTIL_OrderBy {
         * @param sortOrder Sorting order
         * @param nullOrder The null order
         */
-        public Field(Schema.sObjectField sObjField, SortingOrder sortOrder, NullsOrder nullOrder) {
+        public FieldExpression(Schema.sObjectField sObjField, SortingOrder sortOrder, NullsOrder nullOrder) {
             this.sObjField = sObjField;
             this.sortOrder = sortOrder;
             this.nullOrder = nullOrder;
@@ -231,8 +240,8 @@ public with sharing class UTIL_OrderBy {
         * @param referenceField The Lookup/M-D field on the sObject
         * @return Field The object instance 
         */
-        public Field withRelationship(Schema.sObjectField referenceField) {
-            fieldName = referenceField.getDescribe().getRelationshipName() + '.' + fieldName;
+        public FieldExpression fromRelationship(Schema.sObjectField referenceField) {
+			this.referenceField = referenceField;
 
             return this;
         }
@@ -277,15 +286,26 @@ public with sharing class UTIL_OrderBy {
             return fieldName;
         }
 
+		public Boolean isRelationshipField() {
+			return referenceField != null;
+		}
+
+		public sObjectType getReferenceTo() {
+			return referenceField != null
+				? referenceField.getDescribe().getReferenceTo()[0]
+				: null;
+		}
+
         /*********************************************************************************************************
         * @description Builds order by segment for the field
         * @return String The order by 
         */
         public override String toString() {
+            String fieldNameStatement = (referenceField != null ? referenceField.getDescribe().getRelationshipName() + '.' : '') + fieldName;
             String sortStatement = sortOrder == SortingOrder.DESCENDING ? ' DESC ' : ' ';
             String nullStatement = nullOrder == NullsOrder.LAST ? 'NULLS LAST' : '';
 
-            return String.format('{0}{1}{2}', new String[] { fieldName, sortStatement, nullStatement }).trim(); 
+            return String.format('{0}{1}{2}', new String[] { fieldNameStatement, sortStatement, nullStatement }).trim(); 
         }
     }
 

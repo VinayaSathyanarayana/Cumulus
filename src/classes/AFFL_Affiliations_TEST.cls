@@ -751,7 +751,7 @@ public class AFFL_Affiliations_TEST {
         test.StopTest();
         
         queryAffl = affiliationFinder
-            .withOrderBy(new UTIL_OrderBy.Field(Contact.LastName).withRelationship(npe5__Affiliation__c.npe5__Contact__c))
+            .withOrderBy(new UTIL_OrderBy.FieldExpression(Contact.LastName).fromRelationship(npe5__Affiliation__c.npe5__Contact__c))
             .findByRelatedToIds(npe5__Affiliation__c.npe5__Organization__c, new Set<Id>{acc.id});
                     
         System.assertEquals(2, queryAffl.size(), 'Two affiliations should exist.');
@@ -759,7 +759,6 @@ public class AFFL_Affiliations_TEST {
         system.assertEquals(system.label.npe5.DefaultCurrentStatus, queryAffl[1].npe5__Status__c, 'The new affiliation\'s status should be set to the default current status.');
         system.assertEquals(listcon[1].title, queryAffl[1].npe5__Role__c, 'The new affiliation\'s role should match the second contact\'s title.');
         system.assertEquals(System.Today(), queryAffl[0].npe5__StartDate__c, 'The affiliation\'s start date should be today.');
-
     }
 
     /*******************************************************************************************************

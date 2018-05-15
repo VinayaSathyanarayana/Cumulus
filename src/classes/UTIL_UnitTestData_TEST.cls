@@ -447,7 +447,7 @@ public class UTIL_UnitTestData_TEST {
         UTIL_Finder contactFinder =
             new UTIL_Finder(Contact.sObjectType)
                 .withSelectFields(contactFields)
-                .withSelectFieldsFromReference(new Set<Schema.sObjectField>{ Account.npe01__SYSTEM_AccountType__c, Account.Phone }, Contact.AccountId);
+                .withSelectFields(new Set<Schema.sObjectField>{ Account.npe01__SYSTEM_AccountType__c, Account.Phone }, Contact.AccountId);
 
         return contactFinder;
     }

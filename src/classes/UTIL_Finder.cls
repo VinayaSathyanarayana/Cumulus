@@ -58,7 +58,7 @@ public with sharing class UTIL_Finder {
     /*******************************************************************************************************************
     * @description Returns UTIL_Finder with all passed in select fields
     */
-    public UTIL_Finder withSelectFieldsFromReference(Set<Schema.sObjectField> sObjFields, Schema.SObjectField referenceField) {
+    public UTIL_Finder withSelectFields(Set<Schema.sObjectField> sObjFields, Schema.SObjectField referenceField) {
         for (Schema.sObjectField sObjField : sObjFields) {
             selectFields.add(referenceField.getDescribe().getRelationshipName() + '.' + String.valueOf(sObjField));
         }
@@ -89,16 +89,16 @@ public with sharing class UTIL_Finder {
     */
     public UTIL_Finder withOrderBy(List<Schema.sObjectField> sObjFields) {
         for (Schema.sObjectField sObjField : sObjFields) {
-            orderBy.add(new UTIL_OrderBy.Field(sObjField));
+            orderBy.add(new UTIL_OrderBy.FieldExpression(sObjField));
         }
 
         return this;
     }
-    
+
     /*******************************************************************************************************************
     * @description Returns UTIL_Finder with passed in order by field
     */
-    public UTIL_Finder withOrderBy(UTIL_OrderBy.Field field) {
+    public UTIL_Finder withOrderBy(UTIL_OrderBy.FieldExpression field) {
         orderBy.add(field);
 
         return this;
@@ -127,7 +127,7 @@ public with sharing class UTIL_Finder {
         String query = new UTIL_Query()
                 .withFrom(sObjType)
                 .withSelectFields(selectFields)
-                .withWhere(String.isEmpty(condition) ? null : condition)
+                .withWhere(condition)
                 .withOrderBy(orderBy.build())
                 .build();
 
