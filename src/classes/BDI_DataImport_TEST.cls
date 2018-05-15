@@ -248,7 +248,9 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals('c2 C2', listCon[1].Name);
         
         // verify only one household account
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_OrderBy.Field(Account.Name, 'desc')).findAll();
+        list<Account> listAcc = accountFinder
+            .withOrderBy(new UTIL_OrderBy.Field(Account.Name, UTIL_OrderBy.SortingOrder.DESCENDING))
+            .findAll();
         // because c2 is first created as a contact1, it will get a hh account, that will
         // later get orphaned when we move c2 to c1's hh account.
         system.assertEquals(2, listAcc.size());
@@ -811,7 +813,9 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals(listDI[0].Home_Zip_Postal_Code__c, listAddr[0].MailingPostalCode__c);
         system.assertEquals(listDI[0].Home_Country__c, listAddr[0].MailingCountry__c);
         
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_OrderBy.Field(Account.Name, 'desc')).findAll();
+        list<Account> listAcc = accountFinder
+            .withOrderBy(new UTIL_OrderBy.Field(Account.Name, UTIL_OrderBy.SortingOrder.DESCENDING))
+            .findAll();
         // because c2 is first created as a contact1, it will get a hh account, that will
         // later get orphaned when we move c2 to c1's hh account.
         system.assertEquals(2, listAcc.size());
