@@ -43,8 +43,6 @@ public with sharing class UTIL_Query {
     private static final String SELECT_FIELD_CANNOT_BE_EMPTY = 'SELECT field cannot be empty or null.';
     /** @description Error message when FROM value is not provided */
     private static final String FROM_ENTITY_REQUIRED = 'The FROM value is required.';
-    /** @description Error message when provided WHERE clause is empty or null */
-    private static final String WHERE_CLAUSE_CANNOT_BE_EMPTY = 'WHERE clause cannot be empty or null.';
 
     /** @description Operator AND used in the WHERE clause */
     private static final String AND_OPERATOR = ' AND ';
@@ -216,10 +214,6 @@ public with sharing class UTIL_Query {
         String soqlWhere = ''; 
         
         for (String clause : whereClauses) {
-            if (String.isBlank(clause)) {
-                throw new UTIL_QueryException(WHERE_CLAUSE_CANNOT_BE_EMPTY);
-            }
-
             soqlWhere += String.isBlank(soqlWhere) ? '' : AND_OPERATOR;
             soqlWhere += clause;
         }

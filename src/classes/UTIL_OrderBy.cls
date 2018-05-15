@@ -38,255 +38,255 @@ public with sharing class UTIL_OrderBy {
     public enum SortingOrder { ASCENDING, DESCENDING }
     public enum NullsOrder { FIRST, LAST }
 
-	private static final Integer SORT_SAME = 0;
-	private static final Integer SORT_GREATER = 1;
-	private static final Integer SORT_LESS = -1;
+    private static final Integer SORT_SAME = 0;
+    private static final Integer SORT_GREATER = 1;
+    private static final Integer SORT_LESS = -1;
 
-	private List<Field> fields;
-	@TestVisible private Boolean isPostSort = false;
+    private List<Field> fields;
+    @TestVisible private Boolean isPostSort = false;
 
-	/*********************************************************************************************************
-	* @description Constructor
-	*/
-	public UTIL_OrderBy() {
-		fields = new List<Field>();
-	}
+    /*********************************************************************************************************
+    * @description Constructor
+    */
+    public UTIL_OrderBy() {
+        fields = new List<Field>();
+    }
 
-	/*********************************************************************************************************
-	* @description Adds the field into the Order By fields
-	* @param field The field
-	* @return UTIL_OrderBy The object instance
-	*/
-	public UTIL_OrderBy add(Field field) {
-		fields.add(field);
-		return this;
-	}
+    /*********************************************************************************************************
+    * @description Adds the field into the Order By fields
+    * @param field The field
+    * @return UTIL_OrderBy The object instance
+    */
+    public UTIL_OrderBy add(Field field) {
+        fields.add(field);
+        return this;
+    }
 
-	/*********************************************************************************************************
-	* @description Builds the SOQL Order By clause
-	* @return String The Order By clause
-	*/
-	public String build() {
-		List<String> orderBy = new List<String>();
+    /*********************************************************************************************************
+    * @description Builds the SOQL Order By clause
+    * @return String The Order By clause
+    */
+    public String build() {
+        List<String> orderBy = new List<String>();
 
-		if (fields.isEmpty()) {
-			return '';
-		}
+        if (fields.isEmpty()) {
+            return '';
+        }
 
-		for (Field field : fields) {
-			if (!field.isSortable()) {
-				isPostSort = true;
-				return '';
+        for (Field field : fields) {
+            if (!field.isSortable()) {
+                isPostSort = true;
+                return '';
 
-			} else {
-				orderBy.add(field.toString());
-			}
-		}
+            } else {
+                orderBy.add(field.toString());
+            }
+        }
 
-		return String.join(orderBy, ', ');
-	}
+        return String.join(orderBy, ', ');
+    }
 
-	/*********************************************************************************************************
-	* @description Sorts records by the order by fields
-	* @param records Records to sort
-	* @return List<sObject> Sorted records
-	*/
-	public List<sObject> sort(List<sObject> records) {
-		if (!isPostSort) {
-			return records;
-		}
+    /*********************************************************************************************************
+    * @description Sorts records by the order by fields
+    * @param records Records to sort
+    * @return List<sObject> Sorted records
+    */
+    public List<sObject> sort(List<sObject> records) {
+        if (!isPostSort) {
+            return records;
+        }
 
-		List<sObject> sortedRecords = new List<sObject>();
-		for (Integer i = fields.size() - 1; i >= 0; i--) {//we sort from the last order by field to the first?
-			sortedRecords = sort(sortedRecords.isEmpty() ? records : sortedRecords, fields[i]);
-		}
+        List<sObject> sortedRecords = new List<sObject>();
+        for (Integer i = fields.size() - 1; i >= 0; i--) {//we sort from the last order by field to the first?
+            sortedRecords = sort(sortedRecords.isEmpty() ? records : sortedRecords, fields[i]);
+        }
 
-		return sortedRecords;
-	}
+        return sortedRecords;
+    }
 
-	/*********************************************************************************************************
-	* @description Sorts records by the field value
-	* @param records Records to sort
-	* @param field Order By Field
-	* @return List<sObject> Sorted records
-	*/
-	private List<sObject> sort(List<sObject> records, Field field) {
-		List<SortableRecord> sortableRecords = new List<SortableRecord>();
-		for (sObject record : records) {
-			sortableRecords.add(new SortableRecord(record, field));
-		}
+    /*********************************************************************************************************
+    * @description Sorts records by the field value
+    * @param records Records to sort
+    * @param field Order By Field
+    * @return List<sObject> Sorted records
+    */
+    private List<sObject> sort(List<sObject> records, Field field) {
+        List<SortableRecord> sortableRecords = new List<SortableRecord>();
+        for (sObject record : records) {
+            sortableRecords.add(new SortableRecord(record, field));
+        }
 
-		sortableRecords.sort();
+        sortableRecords.sort();
 
-		List<sObject> sortedRecords = new List<sObject>();
-		for (SortableRecord sortedRecord : sortableRecords) {
-			sortedRecords.add(sortedRecord.getRecord());
-		}
+        List<sObject> sortedRecords = new List<sObject>();
+        for (SortableRecord sortedRecord : sortableRecords) {
+            sortedRecords.add(sortedRecord.getRecord());
+        }
 
-		return sortedRecords;
-	}
-
-
-	/*********************************************************************************************************
-	* @description The sObject wrapper used to sort records in the list
-	*/
-	public class SortableRecord implements Comparable {
-		private sObject record;
-		private Field field;
-		private String value;
-
-		/*********************************************************************************************************
-		* @description Constructor
-		* @param record The sObject to be sorted
-		* @param fieldName The sObject field name
-		* @param isSortDesc Indicator if sorting is descending
-		*/
-		public SortableRecord(sObject record, Field field) {
-			this.record = record;
-			this.field = field;
-			this.value = (String) record.get(field.getFieldName());
-		}
-
-		/*********************************************************************************************************
-		* @description Returns the sObject
-		* @return sObject 
-		*/
-		public sObject getRecord() {
-			return record;
-		}
-
-		/*********************************************************************************************************
-		* @description Compares the record with another record based on the field value
-		* @param other The Lookup/M-D field on the sObject
-		* @return Integer The integer  (0, <0, >0) representing the order with regards to the "other" sObject
-		*/
-		public Integer compareTo(Object other) {
-			String otherValue = ((SortableRecord) other).value;
-
-			if (String.isBlank(value) && String.isBlank(otherValue)) {
-				return SORT_SAME;
-			}
-
-			if (String.isBlank(otherValue)) {
-				return field.isNullsLast() ? SORT_LESS : SORT_GREATER;
-			}
-
-			if (String.isBlank(value)) {
-				return field.isNullsLast() ? SORT_GREATER : SORT_LESS;
-			}
-
-			Integer result = value.compareTo(otherValue);
-
-			return (field.isSortDesc() ? -1 : 1) * result;
-		}
-	}
+        return sortedRecords;
+    }
 
 
-	/*********************************************************************************************************
-	* @description The composite field used in the Order By clause
-	*/
-	public class Field {
-		Schema.sObjectField sObjField;
-		SortingOrder sortOrder;
-		NullsOrder nullOrder;
-		String fieldName;
-		Boolean isSortDesc;
-		Boolean isNullsLast;
+    /*********************************************************************************************************
+    * @description The sObject wrapper used to sort records in the list
+    */
+    public class SortableRecord implements Comparable {
+        private sObject record;
+        private Field field;
+        private String value;
 
-		/*********************************************************************************************************
-		* @description Constructor
-		* @param sObjField The field
-		*/
-		public Field(Schema.sObjectField sObjField) {
-			this(sObjField, null);
-		}
+        /*********************************************************************************************************
+        * @description Constructor
+        * @param record The sObject to be sorted
+        * @param fieldName The sObject field name
+        * @param isSortDesc Indicator if sorting is descending
+        */
+        public SortableRecord(sObject record, Field field) {
+            this.record = record;
+            this.field = field;
+            this.value = (String) record.get(field.getFieldName());
+        }
 
-		/*********************************************************************************************************
-		* @description Constructor
-		* @param sObjField The field
-		* @param sortOrder Sorting order
-		*/
-		public Field(Schema.sObjectField sObjField, SortingOrder sortOrder) {
-			this(sObjField, sortOrder, null);
-		}
+        /*********************************************************************************************************
+        * @description Returns the sObject
+        * @return sObject 
+        */
+        public sObject getRecord() {
+            return record;
+        }
 
-		/*********************************************************************************************************
-		* @description Constructor
-		* @param sObjField The field
-		* @param sortOrder Sorting order
-		* @param nullOrder The null order
-		*/
-		public Field(Schema.sObjectField sObjField, SortingOrder sortOrder, NullsOrder nullOrder) {
-			this.sObjField = sObjField;
-			this.sortOrder = sortOrder;
-			this.nullOrder = nullOrder;
+        /*********************************************************************************************************
+        * @description Compares the record with another record based on the field value
+        * @param other The Lookup/M-D field on the sObject
+        * @return Integer The integer  (0, <0, >0) representing the order with regards to the "other" sObject
+        */
+        public Integer compareTo(Object other) {
+            String otherValue = ((SortableRecord) other).value;
 
-			this.fieldName = String.valueOf(this.sObjField);
-			this.isSortDesc = sortOrder == SortingOrder.DESCENDING;
-			this.isNullsLast = nullOrder == NullsOrder.LAST;
-		}
+            if (String.isBlank(value) && String.isBlank(otherValue)) {
+                return SORT_SAME;
+            }
 
-		/*********************************************************************************************************
-		* @description Sets field name to include the relationship name
-		* @param referenceField The Lookup/M-D field on the sObject
-		* @return Field The object instance 
-		*/
+            if (String.isBlank(otherValue)) {
+                return field.isNullsLast() ? SORT_LESS : SORT_GREATER;
+            }
+
+            if (String.isBlank(value)) {
+                return field.isNullsLast() ? SORT_GREATER : SORT_LESS;
+            }
+
+            Integer result = value.compareTo(otherValue);
+
+            return (field.isSortDesc() ? -1 : 1) * result;
+        }
+    }
+
+
+    /*********************************************************************************************************
+    * @description The composite field used in the Order By clause
+    */
+    public class Field {
+        Schema.sObjectField sObjField;
+        SortingOrder sortOrder;
+        NullsOrder nullOrder;
+        String fieldName;
+        Boolean isSortDesc;
+        Boolean isNullsLast;
+
+        /*********************************************************************************************************
+        * @description Constructor
+        * @param sObjField The field
+        */
+        public Field(Schema.sObjectField sObjField) {
+            this(sObjField, null);
+        }
+
+        /*********************************************************************************************************
+        * @description Constructor
+        * @param sObjField The field
+        * @param sortOrder Sorting order
+        */
+        public Field(Schema.sObjectField sObjField, SortingOrder sortOrder) {
+            this(sObjField, sortOrder, null);
+        }
+
+        /*********************************************************************************************************
+        * @description Constructor
+        * @param sObjField The field
+        * @param sortOrder Sorting order
+        * @param nullOrder The null order
+        */
+        public Field(Schema.sObjectField sObjField, SortingOrder sortOrder, NullsOrder nullOrder) {
+            this.sObjField = sObjField;
+            this.sortOrder = sortOrder;
+            this.nullOrder = nullOrder;
+
+            this.fieldName = String.valueOf(this.sObjField);
+            this.isSortDesc = sortOrder == SortingOrder.DESCENDING;
+            this.isNullsLast = nullOrder == NullsOrder.LAST;
+        }
+
+        /*********************************************************************************************************
+        * @description Sets field name to include the relationship name
+        * @param referenceField The Lookup/M-D field on the sObject
+        * @return Field The object instance 
+        */
         public Field withRelationship(Schema.sObjectField referenceField) {
-			fieldName = referenceField.getDescribe().getRelationshipName() + '.' + fieldName;
+            fieldName = referenceField.getDescribe().getRelationshipName() + '.' + fieldName;
 
             return this;
         }
 
-		/*********************************************************************************************************
-		* @description Returns if the field is sortable. If the field is encrypted, the return is "false".
-		* @return Boolean
-		*/
-		public Boolean isSortable() {
-			return sObjField.getDescribe().isSortable();
-		}
+        /*********************************************************************************************************
+        * @description Returns if the field is sortable. If the field is encrypted, the return is "false".
+        * @return Boolean
+        */
+        public Boolean isSortable() {
+            return sObjField.getDescribe().isSortable();
+        }
 
-		/*********************************************************************************************************
-		* @description Returns true for descending sorting
-		* @return Boolean
-		*/
-		public Boolean isSortDesc() {
-			return isSortDesc;
-		}
+        /*********************************************************************************************************
+        * @description Returns true for descending sorting
+        * @return Boolean
+        */
+        public Boolean isSortDesc() {
+            return isSortDesc;
+        }
 
-		/*********************************************************************************************************
-		* @description Returns true for NULLS LAST value
-		* @return Boolean
-		*/
-		public Boolean isNullsLast() {
-			return isNullsLast;
-		}
+        /*********************************************************************************************************
+        * @description Returns true for NULLS LAST value
+        * @return Boolean
+        */
+        public Boolean isNullsLast() {
+            return isNullsLast;
+        }
 
-		/*********************************************************************************************************
-		* @description Returns true if the field is the sObject.Name field
-		* @return Boolean
-		*/
-		public Boolean isNameField() {
-			return sObjField.getDescribe().isNameField();
-		}
+        /*********************************************************************************************************
+        * @description Returns true if the field is the sObject.Name field
+        * @return Boolean
+        */
+        public Boolean isNameField() {
+            return sObjField.getDescribe().isNameField();
+        }
 
-		/*********************************************************************************************************
-		* @description Returns the field name taking into the account the relationship name (if any) and namespace
-		* @return String The field name
-		*/
-		public String getFieldName() {
-			return fieldName;
-		}
+        /*********************************************************************************************************
+        * @description Returns the field name taking into the account the relationship name (if any) and namespace
+        * @return String The field name
+        */
+        public String getFieldName() {
+            return fieldName;
+        }
 
-		/*********************************************************************************************************
-		* @description Builds order by segment for the field
-		* @return String The order by 
-		*/
-		public override String toString() {
-			String sortStatement = sortOrder == SortingOrder.DESCENDING ? ' DESC ' : ' ';
-			String nullStatement = nullOrder == NullsOrder.LAST ? 'NULLS LAST' : '';
+        /*********************************************************************************************************
+        * @description Builds order by segment for the field
+        * @return String The order by 
+        */
+        public override String toString() {
+            String sortStatement = sortOrder == SortingOrder.DESCENDING ? ' DESC ' : ' ';
+            String nullStatement = nullOrder == NullsOrder.LAST ? 'NULLS LAST' : '';
 
-			return String.format('{0}{1}{2}', new String[] { fieldName, sortStatement, nullStatement }).trim(); 
-		}
-	}
+            return String.format('{0}{1}{2}', new String[] { fieldName, sortStatement, nullStatement }).trim(); 
+        }
+    }
 
 }

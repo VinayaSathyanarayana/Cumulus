@@ -177,11 +177,11 @@ private class UTIL_Query_TEST {
 
     /*********************************************************************************************************
     @description 
-        Tests SOQL builder when a WHERE clause is empty or null
+        Tests SOQL builder when passed a WHERE clause is empty or null
     verify:
-        The build() throws an exception
+        The build() succeeds and the empty WHERE clause is ignored
     **********************************************************************************************************/   
-    private static testMethod void testSoqlBuildFailsWhenWhereClauseIsEmpty() {
+    private static testMethod void testSoqlBuildSucceedsWhenWhereClauseIsEmpty() {
         String[] selectFields = new String[] { 'Id', 'Name' };
 
         for (String whereClause : new String[] { ' ', '', null}) {
@@ -193,9 +193,9 @@ private class UTIL_Query_TEST {
                     .withWhere(whereClause)
                     .build();
 
-                System.assert(false, 'An exception should be thrown when WHERE clause is empty or null');
+                String expectedSoql = 'SELECT Id, Name FROM Account WHERE Id IN :expectedAccounts';
             } catch (Exception e) {
-                System.assertEquals('WHERE clause cannot be empty or null.', e.getMessage());
+                System.assertEquals('WHERE clause will be ignored when empty or null.', e.getMessage());
             }
         }
     }
