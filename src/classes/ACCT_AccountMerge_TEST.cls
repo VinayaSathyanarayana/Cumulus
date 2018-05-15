@@ -102,8 +102,8 @@ private with sharing class ACCT_AccountMerge_TEST {
         Test.stopTest();
 
         // reload our contacts and accounts
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name)).findAll();
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
+        list<Account> listAcc = accountFinder.withOrderBy(Account.Name).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.Name).findAll();
             
         // verify the accounts and contacts
         system.assertEquals(1, listAcc.size());
@@ -189,8 +189,8 @@ private with sharing class ACCT_AccountMerge_TEST {
         Test.stopTest();
 
         // reload our contacts and accounts
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Id)).findAll();
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
+        list<Account> listAcc = accountFinder.withOrderBy(Account.Id).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.Name).findAll();
             
         // verify the accounts and contacts
         system.assertEquals(1, listAcc.size());
@@ -255,8 +255,8 @@ private with sharing class ACCT_AccountMerge_TEST {
         Test.stopTest();
 
         // reload our contacts and accounts
-        listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Id)).findAll();
-        listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
+        listAcc = accountFinder.withOrderBy(Account.Id).findAll();
+        listCon = contactFinder.withOrderBy(Contact.Name).findAll();
             
         // verify the accounts and contacts
         system.assertEquals(1, listAcc.size());
@@ -331,7 +331,7 @@ private with sharing class ACCT_AccountMerge_TEST {
         Test.stopTest();
 
         // reload our accounts
-        listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Id)).findAll();
+        listAcc = accountFinder.withOrderBy(Account.Id).findAll();
             
         // verify the accounts 
         system.assertEquals(1, listAcc.size());
@@ -429,10 +429,10 @@ private with sharing class ACCT_AccountMerge_TEST {
         Test.stopTest();
 
         // reload our contacts and accounts
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Id)).findAll();
+        list<Account> listAcc = accountFinder.withOrderBy(Account.Id).findAll();
         system.assertEquals(1, listAcc.size());
         accWinner = listAcc[0];
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.Name).findAll();
             
         // verify the contacts belong to correct account.
         system.assertEquals(listCon[0].AccountId, accWinner.Id);

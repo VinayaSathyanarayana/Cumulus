@@ -450,7 +450,7 @@ private with sharing class ACCT_HHAccounts_TEST {
         insert listCon;
         
         // refresh our contacts to get their accounts
-        listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
+        listCon = contactFinder.withOrderBy(Contact.Name).findAll();
         system.assertEquals(5, listCon.size());
         system.assertNotEquals(null, listCon[0].AccountId);        
         
@@ -477,7 +477,7 @@ private with sharing class ACCT_HHAccounts_TEST {
         update listCon;
         test.stopTest();    // to flush any future calls.
         
-        listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name)).findAll();
+        listAcc = accountFinder.withOrderBy(Account.Name).findAll();
         system.assertEquals(3, listAcc.size());
         
         for (Account acc : listAcc) {
@@ -619,7 +619,7 @@ private with sharing class ACCT_HHAccounts_TEST {
         insert listCon;
         
         // refresh our contacts to get their accounts
-        listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
+        listCon = contactFinder.withOrderBy(Contact.Name).findAll();
         system.assertEquals(5, listCon.size());
         system.assertNotEquals(null, listCon[0].AccountId);        
         
@@ -637,7 +637,7 @@ private with sharing class ACCT_HHAccounts_TEST {
         
         Test.startTest();      
         delete listConDel;
-        list<Contact> listCon2 = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
+        list<Contact> listCon2 = contactFinder.withOrderBy(Contact.Name).findAll();
         system.assertEquals(1, listCon2.size());
         list<Account> listAcc2 = [select Id, Name from Account where id = :listAcc[0].Id];
         system.assertEquals(1, listAcc2.size());
@@ -651,7 +651,7 @@ private with sharing class ACCT_HHAccounts_TEST {
         undelete listCon[1];
         test.stopTest();    // to flush any future calls.
        
-        listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
+        listCon = contactFinder.withOrderBy(Contact.Name).findAll();
         system.assertEquals(2, listCon.size());
         
         listAcc = [select Name, npe01__SYSTEM_AccountType__c, npo02__SYSTEM_CUSTOM_NAMING__c, npe01__SYSTEMIsIndividual__c, 

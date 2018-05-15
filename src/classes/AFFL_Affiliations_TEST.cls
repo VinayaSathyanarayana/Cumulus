@@ -751,9 +751,9 @@ public class AFFL_Affiliations_TEST {
         test.StopTest();
         
         queryAffl = affiliationFinder
-            .withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName).withReferenceField(npe5__Affiliation__c.npe5__Contact__c))
+            .withOrderBy(new UTIL_OrderBy.Field(Contact.LastName).withRelationship(npe5__Affiliation__c.npe5__Contact__c))
             .findByRelatedToIds(npe5__Affiliation__c.npe5__Organization__c, new Set<Id>{acc.id});
-        
+                    
         System.assertEquals(2, queryAffl.size(), 'Two affiliations should exist.');
         system.assertEquals(system.label.npe5.DefaultCurrentStatus, queryAffl[0].npe5__Status__c, 'The existing affiliation\'s status should be unchanged.');
         system.assertEquals(system.label.npe5.DefaultCurrentStatus, queryAffl[1].npe5__Status__c, 'The new affiliation\'s status should be set to the default current status.');

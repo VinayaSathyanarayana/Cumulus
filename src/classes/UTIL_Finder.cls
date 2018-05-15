@@ -45,14 +45,14 @@ public with sharing class UTIL_Finder {
         set;
     }
     private String condition;
-    private OrderByClause orderByClause;
+    private UTIL_OrderBy orderBy;
 
     /*******************************************************************************************************************
     * @description UTIL_Finder constructor for the provided sObject Type
     */
     public UTIL_Finder(sObjectType sObjType) {
         this.sObjType = sObjType;
-        this.orderByClause = new OrderByClause();
+        this.orderBy = new UTIL_OrderBy();
     }
 
     /*******************************************************************************************************************
@@ -89,8 +89,17 @@ public with sharing class UTIL_Finder {
     */
     public UTIL_Finder withOrderBy(List<Schema.sObjectField> sObjFields) {
         for (Schema.sObjectField sObjField : sObjFields) {
-            orderByClause.add(sObjField);
+            orderBy.add(new UTIL_OrderBy.Field(sObjField));
         }
+
+        return this;
+    }
+    
+    /*******************************************************************************************************************
+    * @description Returns UTIL_Finder with passed in order by field
+    */
+    public UTIL_Finder withOrderBy(UTIL_OrderBy.Field field) {
+        orderBy.add(field);
 
         return this;
     }
@@ -101,7 +110,7 @@ public with sharing class UTIL_Finder {
     public List<sObject> findAll() {
         List<sObject> sObjects = Database.query(buildQuery());
 
-        return orderByClause.sort(sObjects);
+        return orderBy.sort(sObjects);
     }
 
     /*******************************************************************************************************************
@@ -111,7 +120,7 @@ public with sharing class UTIL_Finder {
         condition = String.valueOf(referenceField) + ' IN :relatedToIds';
         List<sObject> sObjects = Database.query(buildQuery());
 
-        return orderByClause.sort(sObjects);
+        return orderBy.sort(sObjects);
     }
 
     private String buildQuery() {
@@ -119,169 +128,10 @@ public with sharing class UTIL_Finder {
                 .withFrom(sObjType)
                 .withSelectFields(selectFields)
                 .withWhere(String.isEmpty(condition) ? null : condition)
-                .withOrderBy(orderByClause.build())
+                .withOrderBy(orderBy.build())
                 .build();
 
         return query;
     }
 
-
-
-    /*******************************************************************************************************
-    * @description OrderByClause
-    */
-    public class OrderByClause {
-        private List<Field> fields;
-        private Boolean isPostSort = false;
-
-        public OrderByClause add(Field field) {
-            fields.add(field);
-        }
-
-        public String build() {
-            List<String> orderBy = new List<String>();
-
-            if (fields.isEmpty()) {
-                return '';
-            }
-
-            for (Field field : fields) {
-                if (!field.isSortable()) {
-                    isPostSort = true;
-                    return '';
-
-                } else {
-                    orderBy.add(field.toString());
-                }
-            }
-
-            return String.join(orderBy, ', ');
-        }
-
-        public List<sObject> sort(List<sObject> records) {
-            if (!isPostSort) {
-                return records;
-            }
-
-            List<sObject> sortedRecords = new List<sObject>();
-            for (Integer index = fields.size() - 1; index >= 0; index--) {
-                sortedRecords = sort(records, fields[index]);
-            }
-
-            return sortedRecords;
-        }
-
-        /*******************************************************************************************************
-        * @description Sorts records by the field
-        */
-        public List<sObject> sort(List<sObject> records, Field field) {
-            if (field.isNameField()) {
-                records.sort();
-                return records;
-            } 
-
-            //Can we wrap the sObject into a Comparable class, store records in a list
-            //and then just use the list.sort() and traverse it to extract the sObject?
-            Map<String, List<sObject>> recordsBySortValue = new Map<String, List<sObject>>();
-            List<String> values = new List<String>();
-
-            for (sObject record : records){
-                String value = record.get(field.getName()).toString();
-                values.add(value);
-
-                if (!recordsBySortValue.containsKey(value)) {
-                    recordsBySortValue.put(value, new List<sObject>());
-                }
-                recordsBySortValue.get(value).add(record);
-            }
-
-            values.sort();
-
-            Integer size = values.size();
-            List<sObject> sortedRecords = new sObject[size];
-
-            for (Integer i = 0; i < size;  i++) {
-                Integer index = isDesc ? size - i - 1 : i;
-                sortedRecords[index] = recordsBySortValue.get(values[i]);
-            }
-            return sortedRecords;
-        }
-
-
-        public class Field {
-            Schema.sObjectField sObjField;
-            String sortOrder;
-            String nullOrder;
-            Boolean isDesc;
-            String fieldName;
-
-            /*******************************************************************************************************
-            * @description Constructors
-            */
-            public Field(Schema.sObjectField sObjField) {
-                this(sObjField, '');
-            }
-
-            public Field(Schema.sObjectField sObjField, String sortOrder) {
-                this(sObjField, sortOrder, '');
-            }
-
-            public Field(Schema.sObjectField sObjField, String sortOrder, String nullOrder) {
-                this.sObjField = sObjField;
-                this.sortOrder = String.isBlank(sortOrder) ? '' : sortOrder;
-                this.nullOrder = String.isBlank(nullOrder) ? '' : 'NULLS ' + nullOrder;
-
-                this.fieldName = String.valueOf(this.sObjField);
-                this.isDesc = this.sortOrder.equalsIgnoreCase('desc');
-            }
-
-            /*******************************************************************************************************
-            * @description Returns if the field is sortable. If the field is encrypted, the return is "false".
-            */
-            public Boolean isSortable() {
-                return sObjField.getDescribe().isSortable();
-            }
-
-            /*******************************************************************************************************
-            * @description Returns if the field is a Name.
-            */
-            public Boolean isNameField() {
-                return sObjField.getDescribe().isNameField();
-            }
-
-            /*******************************************************************************************************
-            * @description Returns field name
-            */
-            public Boolean getName() {
-                return fieldName;
-            }
-
-            /*******************************************************************************************************
-            * @description Returns ORDER BY clause segment for this field
-            */
-            public override String toString() {
-                return String.format('{0} {1} {2}', new String[] { fieldName, sortOrder, nullOrder }); 
-            }
-        }
-    }
-
-
-
-/*
-    public class OrderBy {
-        Schema.sObjectField referenceField;//Contact.AccountId --> Lookup/M-D
-
-        public OrderBy withReferenceField(Schema.sObjectField referenceField) {
-            this.referenceField = referenceField;
-
-            return this;
-        }
-
-        private String getOrderByField() {
-            return referenceField == null ? 
-                String.valueOf(field) :
-                referenceField.getDescribe().getRelationshipName() + '.' + String.valueOf(field);
-        }
-    }
-    */
 }

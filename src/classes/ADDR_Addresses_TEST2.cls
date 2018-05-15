@@ -1357,11 +1357,11 @@ public with sharing class ADDR_Addresses_TEST2 {
         Test.stopTest();
 
         // verify results
-        listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Id)).findAll();
+        listAcc = accountFinder.withOrderBy(Account.Id).findAll();
         system.assertEquals(cAcc, listAcc.size());
-        List<Address__c> listAddr = addressFinder.withOrderBy(new UTIL_Finder.OrderBy(Address__c.Household_Account__c)).findAll();
+        List<Address__c> listAddr = addressFinder.withOrderBy(Address__c.Household_Account__c).findAll();
         system.assertEquals(cAcc, listAddr.size());
-        listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.AccountId)).findAll();
+        listCon = contactFinder.withOrderBy(Contact.AccountId).findAll();
         system.assertEquals(cAcc, listCon.size());
         
         for (integer i = 0; i < cAcc; i++) {
@@ -1419,11 +1419,11 @@ public with sharing class ADDR_Addresses_TEST2 {
         Test.stopTest();
         
         // verify results
-        listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Id)).findAll();
+        listAcc = accountFinder.withOrderBy(Account.Id).findAll();
         system.assertEquals(cAcc, listAcc.size());
-        listAddrT = addressFinder.withOrderBy(new UTIL_Finder.OrderBy(Address__c.Household_Account__c)).findAll();
+        listAddrT = addressFinder.withOrderBy(Address__c.Household_Account__c).findAll();
         system.assertEquals(cAcc, listAddrT.size());
-        listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.AccountId)).findAll();
+        listCon = contactFinder.withOrderBy(Contact.AccountId).findAll();
         system.assertEquals(cAcc, listCon.size());        
         
         for (integer i = 0; i < cAcc; i++) {

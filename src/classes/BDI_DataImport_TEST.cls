@@ -136,7 +136,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Name)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.Name).findAll();
         system.assertEquals(2, listCon.size());
         system.assertNotEquals(listCon[1].Name, listCon[0].Name);
 
@@ -175,7 +175,7 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals(1, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
 
-        listDI = dataImportFinder.withOrderBy(new UTIL_Finder.OrderBy(DataImport__c.Contact1ImportStatus__c)).findAll();
+        listDI = dataImportFinder.withOrderBy(DataImport__c.Contact1ImportStatus__c).findAll();
         system.assertEquals(2, listDI.size());
         system.assertEquals(listDI[0].Contact1Imported__c, listCon[0].Id);
         system.assertEquals(listDI[1].Contact1Imported__c, listCon[0].Id);
@@ -206,11 +206,11 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.Id)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.Id).findAll();
         system.assertEquals(2, listCon.size());
         system.assertNotEquals(listCon[1].Name, listCon[0].Name);
 
-        listDI = dataImportFinder.withOrderBy(new UTIL_Finder.OrderBy(DataImport__c.Contact1ImportStatus__c)).findAll();
+        listDI = dataImportFinder.withOrderBy(DataImport__c.Contact1ImportStatus__c).findAll();
         system.assertEquals(2, listDI.size());
         system.assertEquals(listDI[0].Contact1Imported__c, listCon[0].Id);
         system.assertEquals(listDI[1].Contact1Imported__c, listCon[1].Id);
@@ -242,20 +242,20 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(2, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);
         
         // verify only one household account
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name, 'desc')).findAll();
+        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_OrderBy.Field(Account.Name, 'desc')).findAll();
         // because c2 is first created as a contact1, it will get a hh account, that will
         // later get orphaned when we move c2 to c1's hh account.
         system.assertEquals(2, listAcc.size());
         system.assertEquals(listAcc[0].Id, listCon[0].AccountId);
         system.assertEquals(listAcc[0].Id, listCon[1].AccountId);
 
-        listDI = dataImportFinder.withOrderBy(new UTIL_Finder.OrderBy(DataImport__c.Name)).findAll();
+        listDI = dataImportFinder.withOrderBy(DataImport__c.Name).findAll();
         system.assertEquals(2, listDI.size());
         system.assertEquals(listDI[0].Contact1Imported__c, listCon[0].Id);
         system.assertEquals(listDI[1].Contact1Imported__c, listCon[1].Id);
@@ -295,7 +295,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(2, listCon.size());
         system.assertNotEquals(listCon[1].Name, listCon[0].Name);
         
@@ -340,7 +340,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(1, listCon.size());
         system.assertEquals('TestFirstname00 TestLastname00', listCon[0].Name);
         
@@ -376,7 +376,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name)).findAll();
+        list<Account> listAcc = accountFinder.withOrderBy(Account.Name).findAll();
         system.assertEquals(2, listAcc.size());
         system.assertNotEquals(listAcc[1].Name, listAcc[0].Name);
 
@@ -408,7 +408,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name)).findAll();
+        list<Account> listAcc = accountFinder.withOrderBy(Account.Name).findAll();
         system.assertEquals(1, listAcc.size());
 
         listDI = [select Account1Imported__c, Account1ImportStatus__c, Account2Imported__c, Account2ImportStatus__c from DataImport__c];
@@ -440,10 +440,10 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name)).findAll();
+        list<Account> listAcc = accountFinder.withOrderBy(Account.Name).findAll();
         system.assertEquals(1, listAcc.size());
 
-        listDI = dataImportFinder.withOrderBy(new UTIL_Finder.OrderBy(DataImport__c.Account1ImportStatus__c)).findAll();
+        listDI = dataImportFinder.withOrderBy(DataImport__c.Account1ImportStatus__c).findAll();
         system.assertEquals(2, listDI.size());
         system.assertEquals(listDI[0].Account1Imported__c, listAcc[0].Id);
         system.assertEquals(listDI[1].Account1Imported__c, listAcc[0].Id);
@@ -477,10 +477,10 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name)).findAll();
+        listAcc = accountFinder.withOrderBy(Account.Name).findAll();
         system.assertEquals(2, listAcc.size());
 
-        listDI = dataImportFinder.withOrderBy(new UTIL_Finder.OrderBy(DataImport__c.Id)).findAll();
+        listDI = dataImportFinder.withOrderBy(DataImport__c.Id).findAll();
         system.assertEquals(2, listDI.size());
         system.assertEquals(listDI[0].Account1Imported__c, listAcc[0].Id);
         system.assertEquals(listDI[1].Account1Imported__c, listAcc[1].Id);
@@ -519,11 +519,11 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name)).findAll();
+        listAcc = accountFinder.withOrderBy(Account.Name).findAll();
         removeHouseholdAccounts(listAcc);
         system.assertEquals(2, listAcc.size());
 
-        listDI = dataImportFinder.withOrderBy(new UTIL_Finder.OrderBy(DataImport__c.Contact1_Lastname__c)).findAll();
+        listDI = dataImportFinder.withOrderBy(DataImport__c.Contact1_Lastname__c).findAll();
         system.assertEquals(2, listDI.size());
         system.assertEquals(listDI[0].Account1Imported__c, listAcc[0].Id);
         system.assertEquals(listDI[1].Account1Imported__c, listAcc[0].Id);
@@ -601,7 +601,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(4, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);
@@ -612,7 +612,7 @@ public with sharing class BDI_DataImport_TEST {
         system.assertNotEquals(null, listCon[2].AccountId);
         system.assertNotEquals(null, listCon[3].AccountId);
         
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name)).findAll();
+        list<Account> listAcc = accountFinder.withOrderBy(Account.Name).findAll();
         removeHouseholdAccounts(listAcc);
         system.assertEquals(2, listAcc.size());
         system.assertEquals(listCon[0].Primary_Affiliation__c, listAcc[0].Id);
@@ -620,8 +620,9 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals(listCon[2].Primary_Affiliation__c, null);
         system.assertEquals(listCon[3].Primary_Affiliation__c, listAcc[1].Id);
         
-        list<npe5__Affiliation__c> listAffl = affiliationFinder.withOrderBy(
-            new UTIL_Finder.OrderBy(Contact.Name).withReferenceField(npe5__Affiliation__c.npe5__Contact__c)).findAll();
+        list<npe5__Affiliation__c> listAffl = affiliationFinder
+            .withOrderBy(new UTIL_OrderBy.Field(Contact.Name).withRelationship(npe5__Affiliation__c.npe5__Contact__c))
+            .findAll();
         system.assertEquals(2, listAffl.size());
         system.assertEquals(listCon[0].Id, listAffl[0].npe5__Contact__c);
         system.assertEquals(listCon[3].Id, listAffl[1].npe5__Contact__c);
@@ -656,7 +657,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(4, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);
@@ -671,17 +672,17 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals('Portland', listCon[2].MailingCity);
         system.assertEquals('Portland', listCon[3].MailingCity);
         
-        list<Address__c> listAddr = addressFinder.withOrderBy(new UTIL_Finder.OrderBy(Address__c.MailingCity__c)).findAll(); 
+        list<Address__c> listAddr = addressFinder.withOrderBy(Address__c.MailingCity__c).findAll(); 
         system.assertEquals(2, listAddr.size());
         system.assertEquals('Portland', listAddr[0].MailingCity__c);
         system.assertEquals('Seattle', listAddr[1].MailingCity__c);
         
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name)).findAll();
+        list<Account> listAcc = accountFinder.withOrderBy(Account.Name).findAll();
         system.assertEquals(2, listAcc.size());
         system.assertEquals('Seattle', listAcc[0].BillingCity);
         system.assertEquals('Portland', listAcc[1].BillingCity);
                 
-        listDI = dataImportFinder.withOrderBy(new UTIL_Finder.OrderBy(DataImport__c.Home_City__c)).findAll();
+        listDI = dataImportFinder.withOrderBy(DataImport__c.Home_City__c).findAll();
         system.assertEquals(2, listDI.size());
         system.assertEquals(listDI[0].HomeAddressImported__c, listAddr[0].Id); 
         system.assertEquals(listDI[1].HomeAddressImported__c, listAddr[1].Id);
@@ -723,7 +724,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
 
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(4, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);
@@ -738,15 +739,15 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals('Portland', listCon[2].MailingCity);
         system.assertEquals('Portland', listCon[3].MailingCity);
 
-        list<Address__c> listAddr = addressFinder.withOrderBy(new UTIL_Finder.OrderBy(Address__c.MailingCity__c)).findAll();
+        list<Address__c> listAddr = addressFinder.withOrderBy(Address__c.MailingCity__c).findAll();
         system.assertEquals(4, listAddr.size());
 
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name)).findAll();
+        list<Account> listAcc = accountFinder.withOrderBy(Account.Name).findAll();
         system.assertEquals(2, listAcc.size());
         system.assertEquals('Portland', listAcc[0].BillingCity);
         system.assertEquals('Portland', listAcc[1].BillingCity);
 
-        listDI = dataImportFinder.withOrderBy(new UTIL_Finder.OrderBy(DataImport__c.Home_City__c)).findAll();
+        listDI = dataImportFinder.withOrderBy(DataImport__c.Home_City__c).findAll();
         system.assertEquals(2, listDI.size());
         system.assertEquals(listDI[0].HomeAddressImported__c, listAddr[0].Id);
         system.assertEquals(listDI[1].HomeAddressImported__c, listAddr[1].Id);
@@ -792,7 +793,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(2, listCon.size());
         for (Contact con : listCon) {        
             system.assertEquals(listDI[0].Home_Street__c, con.MailingStreet);
@@ -802,7 +803,7 @@ public with sharing class BDI_DataImport_TEST {
             system.assertEquals(listDI[0].Home_Country__c, con.MailingCountry);
         }
         
-        list<Address__c> listAddr = addressFinder.withOrderBy(new UTIL_Finder.OrderBy(Address__c.MailingCity__c)).findAll(); 
+        list<Address__c> listAddr = addressFinder.withOrderBy(Address__c.MailingCity__c).findAll(); 
         system.assertEquals(1, listAddr.size());
         system.assertEquals(listDI[0].Home_Street__c, listAddr[0].MailingStreet__c);
         system.assertEquals(listDI[0].Home_City__c, listAddr[0].MailingCity__c);
@@ -810,7 +811,7 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals(listDI[0].Home_Zip_Postal_Code__c, listAddr[0].MailingPostalCode__c);
         system.assertEquals(listDI[0].Home_Country__c, listAddr[0].MailingCountry__c);
         
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name, 'desc')).findAll();
+        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_OrderBy.Field(Account.Name, 'desc')).findAll();
         // because c2 is first created as a contact1, it will get a hh account, that will
         // later get orphaned when we move c2 to c1's hh account.
         system.assertEquals(2, listAcc.size());
@@ -820,7 +821,7 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals(listDI[0].Home_Zip_Postal_Code__c, listAcc[0].BillingPostalCode);
         system.assertEquals(listDI[0].Home_Country__c, listAcc[0].BillingCountry);                
 
-        listDI = dataImportFinder.withOrderBy(new UTIL_Finder.OrderBy(DataImport__c.Name)).findAll();
+        listDI = dataImportFinder.withOrderBy(DataImport__c.Name).findAll();
         system.assertEquals(5, listDI.size());
         integer cCreated = 0;
         integer cMatched = 0;
@@ -871,7 +872,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(4, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);
@@ -886,10 +887,10 @@ public with sharing class BDI_DataImport_TEST {
         system.assertEquals('Portland', listCon[2].MailingCity);
         system.assertEquals('Portland', listCon[3].MailingCity);
         
-        list<Address__c> listAddr = addressFinder.withOrderBy(new UTIL_Finder.OrderBy(Address__c.MailingCity__c)).findAll(); 
+        list<Address__c> listAddr = addressFinder.withOrderBy(Address__c.MailingCity__c).findAll(); 
         system.assertEquals(0, listAddr.size());
 
-        list<Account> listAcc = accountFinder.withOrderBy(new UTIL_Finder.OrderBy(Account.Name)).findAll();
+        list<Account> listAcc = accountFinder.withOrderBy(Account.Name).findAll();
         system.assertEquals(2, listAcc.size());
         system.assertEquals('Seattle', listAcc[0].BillingCity);
         system.assertEquals('Portland', listAcc[1].BillingCity);                
@@ -928,16 +929,16 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(2, listCon.size());
         
-        list<Address__c> listAddr = addressFinder.withOrderBy(new UTIL_Finder.OrderBy(Address__c.MailingCity__c)).findAll(); 
+        list<Address__c> listAddr = addressFinder.withOrderBy(Address__c.MailingCity__c).findAll(); 
         system.assertEquals(3, listAddr.size());
         system.assertEquals('Bellevue', listAddr[0].MailingCity__c);
         system.assertEquals('Portland', listAddr[1].MailingCity__c);
         system.assertEquals('Seattle', listAddr[2].MailingCity__c);
         
-        listDI = dataImportFinder.withOrderBy(new UTIL_Finder.OrderBy(DataImport__c.Contact1_LastName__c)).findAll();
+        listDI = dataImportFinder.withOrderBy(DataImport__c.Contact1_LastName__c).findAll();
         system.assertEquals(2, listDI.size());
         system.assertEquals(listDI[0].Contact1Imported__c, listCon[0].Id);
         system.assertEquals(listDI[1].Contact1Imported__c, listCon[1].Id);
@@ -992,7 +993,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(2, listCon.size());
         system.assertEquals('Bellevue', listCon[0].MailingCity);
         system.assertEquals('Bellevue', listCon[1].MailingCity);
@@ -1040,7 +1041,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(4, listCon.size());
         system.assertEquals('c1 C1', listCon[0].Name);
         system.assertEquals('c2 C2', listCon[1].Name);
@@ -1191,7 +1192,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(2, listCon.size());
         
         list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account order by Name];
@@ -1249,7 +1250,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(2, listCon.size());
         
         list<Account> listAcc = [select Id, Name, npo02__TotalOppAmount__c from Account order by Name];
@@ -1334,7 +1335,7 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        list<Contact> listCon = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        list<Contact> listCon = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(2, listCon.size());
         system.assertNotEquals(listCon[1].Name, listCon[0].Name);
         system.assertEquals(listDI[0].Household_Phone__c, listCon[0].Account.Phone);
@@ -1367,7 +1368,7 @@ public with sharing class BDI_DataImport_TEST {
         insert listConExisting;
         
         // get their households
-        listConExisting = contactFinder.withOrderBy(new UTIL_Finder.OrderBy(Contact.LastName)).findAll();
+        listConExisting = contactFinder.withOrderBy(Contact.LastName).findAll();
         system.assertEquals(2, listConExisting.size());
         
         list<DataImport__c> listDI = new list<DataImport__c>();
@@ -1384,10 +1385,10 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
     
         // verify expected results
-        List<UTIL_Finder.OrderBy> orderByFields = new List<UTIL_Finder.OrderBy>{
-            new UTIL_Finder.OrderBy(Contact.LastName),
-            new UTIL_Finder.OrderBy(Contact.FirstName)};
-        list<Contact> listCon = contactFinder.withOrderBy(orderByFields).findAll();
+        list<Contact> listCon = contactFinder
+            .withOrderBy(new List<Schema.sObjectField>{ Contact.LastName, Contact.FirstName })
+            .findAll();
+
         system.assertEquals(5, listCon.size());
         system.assertEquals(listConExisting[0].AccountId, listCon[0].AccountId);
         system.assertEquals(listConExisting[0].AccountId, listCon[1].AccountId);
@@ -1429,10 +1430,9 @@ public with sharing class BDI_DataImport_TEST {
         Test.stopTest();
 
         // verify expected results
-        List<UTIL_Finder.OrderBy> orderByFields = new List<UTIL_Finder.OrderBy>{
-            new UTIL_Finder.OrderBy(Contact.LastName),
-            new UTIL_Finder.OrderBy(Contact.FirstName)};
-        list<Contact> listCon = contactFinder.withOrderBy(orderByFields).findAll();
+        list<Contact> listCon = contactFinder
+            .withOrderBy(new LIst<Schema.sObjectField>{ Contact.LastName, Contact.FirstName })
+            .findAll();
         system.assertEquals(2, listCon.size());
         system.assertEquals(hhId, listCon[0].AccountId);
         system.assertEquals(hhId, listCon[1].AccountId);
