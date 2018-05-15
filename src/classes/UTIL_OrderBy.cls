@@ -111,24 +111,16 @@ public with sharing class UTIL_OrderBy {
 	* @return List<sObject> Sorted records
 	*/
 	private List<sObject> sort(List<sObject> records, Field field) {
-		//WARN check (https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_select_orderby.htm): 
-		//"For text fields, the sort algorithm uses the Unicode sort order. Also, empty fields precede non-empty fields in the sort order."
-		// --> What if we have NULLS LAST, can we still use the records.sort() or it has to be manually sorted?		
-		if (field.isNameField()) {
-			records.sort();//this will change the passed in list; see if there are negative side-effects
-			return records;
-		} 
-
 		List<SortableRecord> sortableRecords = new List<SortableRecord>();
-		for (Integer i = 0; i < records.size(); i++) {
-			sortableRecords.add(new SortableRecord(records[i], field));
+		for (sObject record : records) {
+			sortableRecords.add(new SortableRecord(record, field));
 		}
 
 		sortableRecords.sort();
 
 		List<sObject> sortedRecords = new List<sObject>();
-		for (Integer i = 0; i < records.size(); i++) {
-			sortedRecords.add(sortableRecords[i].getRecord());
+		for (SortableRecord sortedRecord : sortableRecords) {
+			sortedRecords.add(sortedRecord.getRecord());
 		}
 
 		return sortedRecords;
@@ -176,16 +168,16 @@ public with sharing class UTIL_OrderBy {
 			}
 
 			if (String.isBlank(otherValue)) {
-				return field.isNullsLast() ? SORT_GREATER : SORT_LESS;
+				return field.isNullsLast() ? SORT_LESS : SORT_GREATER;
 			}
 
 			if (String.isBlank(value)) {
-				return field.isNullsLast() ? SORT_LESS : SORT_GREATER;
+				return field.isNullsLast() ? SORT_GREATER : SORT_LESS;
 			}
 
 			Integer result = value.compareTo(otherValue);
 
-			return (field.isSortDesc() ? 1 : -1) * result;
+			return (field.isSortDesc() ? -1 : 1) * result;
 		}
 	}
 
@@ -290,10 +282,10 @@ public with sharing class UTIL_OrderBy {
 		* @return String The order by 
 		*/
 		public override String toString() {
-			String sortStatement = sortOrder == SortingOrder.DESCENDING ? 'DESC' : '';
+			String sortStatement = sortOrder == SortingOrder.DESCENDING ? ' DESC ' : ' ';
 			String nullStatement = nullOrder == NullsOrder.LAST ? 'NULLS LAST' : '';
 
-			return String.format('{0} {1} {2}', new String[] { fieldName, sortStatement, nullStatement }).trim(); 
+			return String.format('{0}{1}{2}', new String[] { fieldName, sortStatement, nullStatement }).trim(); 
 		}
 	}
 

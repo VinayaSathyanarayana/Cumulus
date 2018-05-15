@@ -33,7 +33,7 @@
 * @group Utilities
 * @description Unit tests for UTIL_OrderBy class
 */
-@isTest
+@isTest(isParallel=true)
 private class UTIL_OrderBy_TEST {
 	private static final UTIL_OrderBy.SortingOrder SORT_DESC = UTIL_OrderBy.SortingOrder.DESCENDING;
 	private static final UTIL_OrderBy.SortingOrder SORT_ASC = UTIL_OrderBy.SortingOrder.ASCENDING;
@@ -110,7 +110,7 @@ private class UTIL_OrderBy_TEST {
 
 		System.assert(!field.isSortDesc());
 	}
-
+/*
 	@isTest static void compareToReturnsZeroWhenValuesAreTheSame() {
 		UTIL_OrderBy.Field field = new UTIL_OrderBy.Field(Account.Name);
 		UTIL_OrderBy.SortableRecord record = new UTIL_OrderBy.SortableRecord(new Account(Name = 'foo'), field);
@@ -207,6 +207,24 @@ private class UTIL_OrderBy_TEST {
 		System.assert(record.compareTo(other) > 0);
 	}
 
+*/
+
+	@isTest static void sortSortsRecordsManuallyByNameDesc() {
+		UTIL_OrderBy orderBy = new UTIL_OrderBy();
+		orderBy.add(new UTIL_OrderBy.Field(Account.Name, SORT_DESC));
+		orderBy.isPostSort = true;
+
+		List<sObject> records = new List<sObject>{
+			new Account(Name = 'foo'),
+			new Account(Name = 'xyz'),
+			new Account(Name = 'abc')
+		};
+
+		List<sObject> sortedRecords = orderBy.sort(records);
+		System.assertEquals('xyz', (String) sortedRecords[0].get('Name'));
+		System.assertEquals('foo', (String) sortedRecords[1].get('Name'));
+		System.assertEquals('abc', (String) sortedRecords[2].get('Name'));
+	}
 
 	@isTest static void sortSortsRecordsManuallyWhenTheFieldIsNotSortable() {
 		UTIL_OrderBy orderBy = new UTIL_OrderBy();
@@ -214,8 +232,8 @@ private class UTIL_OrderBy_TEST {
 		orderBy.isPostSort = true;
 
 		List<sObject> records = new List<sObject>{
-			new Contact(LastName = 'xyz'),
 			new Contact(LastName = 'foo'),
+			new Contact(LastName = 'xyz'),
 			new Contact(LastName = 'abc')
 		};
 
@@ -232,10 +250,10 @@ private class UTIL_OrderBy_TEST {
 		orderBy.isPostSort = true;
 
 		List<sObject> records = new List<sObject>{
-			new Contact(LastName = 'xyz', FirstName = 'bar'),
 			new Contact(LastName = 'foo', FirstName = 'zbar'),
+			new Contact(LastName = 'xyz', FirstName = 'bar'),
 			new Contact(LastName = 'foo', FirstName = 'abar'),
-			new Contact(LastName = 'abc', FirstName = 'bar')
+			new Contact(LastName = 'abc', FirstName = 'xbar')
 		};
 
 		List<sObject> sortedRecords = orderBy.sort(records);
@@ -245,8 +263,150 @@ private class UTIL_OrderBy_TEST {
 		System.assertEquals('xyz', (String) sortedRecords[3].get('LastName'));
 	}
 
+	@isTest static void sortSortsRecordsManuallyWhenTheValueIsNullForNullsFirst() {
+		UTIL_OrderBy orderBy = new UTIL_OrderBy();
+		orderBy.add(new UTIL_OrderBy.Field(Contact.LastName, SORT_ASC, NULLS_FIRST));
+		orderBy.isPostSort = true;
 
+		List<sObject> records = new List<sObject>{
+			new Contact(LastName = 'foo'),
+			new Contact(FirstName = 'rafael'),
+			new Contact(LastName = 'xyz'),
+			new Contact(LastName = 'abc')
+		};
 
+		List<sObject> sortedRecords = orderBy.sort(records);
+		System.assertEquals('rafael', (String) sortedRecords[0].get('FirstName'));
+		System.assertEquals('abc', (String) sortedRecords[1].get('LastName'));
+		System.assertEquals('foo', (String) sortedRecords[2].get('LastName'));
+		System.assertEquals('xyz', (String) sortedRecords[3].get('LastName'));
+	}
+
+	@isTest static void sortSortsRecordsManuallyWhenTheValueIsNullForNullsLast() {
+		UTIL_OrderBy orderBy = new UTIL_OrderBy();
+		orderBy.add(new UTIL_OrderBy.Field(Contact.LastName, SORT_ASC, NULLS_LAST));
+		orderBy.isPostSort = true;
+
+		List<sObject> records = new List<sObject>{
+			new Contact(LastName = 'foo'),
+			new Contact(FirstName = 'rafael'),
+			new Contact(LastName = 'xyz'),
+			new Contact(LastName = 'abc')
+		};
+
+		List<sObject> sortedRecords = orderBy.sort(records);
+		System.assertEquals('abc', (String) sortedRecords[0].get('LastName'));
+		System.assertEquals('foo', (String) sortedRecords[1].get('LastName'));
+		System.assertEquals('xyz', (String) sortedRecords[2].get('LastName'));
+		System.assertEquals('rafael', (String) sortedRecords[3].get('FirstName'));
+	}
+
+	@isTest static void sortSortsRecordsAsTheSoqlOrderBy() {
+		List<sObject> records = new List<sObject>{
+			new Account(Name = 'foo asc'),
+			new Account(Name = 'xyz asc'),
+			new Account(Name = 'abc asc')
+		};
+		insert records;
+
+		List<Account> actualRecords = [SELECT Name FROM Account ORDER BY Name];
+		System.assertEquals(records.size(), actualRecords.size());
+
+		UTIL_OrderBy orderBy = new UTIL_OrderBy();
+		orderBy.add(new UTIL_OrderBy.Field(Account.Name));
+		orderBy.isPostSort = true;
+
+		List<sObject> sortedRecords = orderBy.sort(records);
+		System.assertEquals(records.size(), sortedRecords.size());
+
+		for (Integer i = 0; i < actualRecords.size(); i++) {
+			System.assertEquals(actualRecords[i].Name, (String) sortedRecords[i].get('Name'));
+		}
+	}
+
+	@isTest static void sortSortsRecordsAsTheSoqlOrderByDesc() {
+		List<sObject> records = new List<sObject>{
+			new Account(Name = 'foo desc'),
+			new Account(Name = 'xyz desc'),
+			new Account(Name = 'abc desc')
+		};
+		insert records;
+
+		List<Account> actualRecords = [SELECT Name FROM Account ORDER BY Name DESC];
+		System.assertEquals(records.size(), actualRecords.size());
+
+		UTIL_OrderBy orderBy = new UTIL_OrderBy();
+		orderBy.add(new UTIL_OrderBy.Field(Account.Name, SORT_DESC));
+		orderBy.isPostSort = true;
+
+		List<sObject> sortedRecords = orderBy.sort(records);
+		System.assertEquals(records.size(), sortedRecords.size());
+
+		for (Integer i = 0; i < actualRecords.size(); i++) {
+			System.assertEquals(actualRecords[i].Name, (String) sortedRecords[i].get('Name'));
+		}
+	}
+
+	@isTest static void sortSortsRecordsAsTheSoqlOrderByMultipleFields() {
+		List<sObject> records = new List<sObject>{
+			new Contact(LastName = 'Smith', FirstName = 'John', Title = 'Administrator'),
+			new Contact(LastName = 'Smith', FirstName = 'Jane', Title = 'Business Manager'),
+			new Contact(LastName = 'Clark', FirstName = 'Kent', Title = 'Business Manager'),
+			new Contact(LastName = 'Clark', FirstName = 'Kent', Title = 'Administrator'),
+			new Contact(LastName = 'Clark', FirstName = 'Abby', Title = 'Executive')
+		};
+		insert records;
+
+		List<Contact> actualRecords = [
+			SELECT Name, FirstName, LastName, Title 
+			FROM Contact 
+			ORDER BY LastName, FirstName, Title
+		];
+		System.assertEquals(records.size(), actualRecords.size());
+
+		UTIL_OrderBy orderBy = new UTIL_OrderBy();
+		orderBy.add(new UTIL_OrderBy.Field(Contact.LastName));
+		orderBy.add(new UTIL_OrderBy.Field(Contact.FirstName));
+		orderBy.add(new UTIL_OrderBy.Field(Contact.Title));
+		orderBy.isPostSort = true;
+
+		List<sObject> sortedRecords = orderBy.sort(records);
+		for (Integer i = 0; i < actualRecords.size(); i++) {
+			System.assertEquals(actualRecords[i].LastName, (String) sortedRecords[i].get('LastName'));
+			System.assertEquals(actualRecords[i].FirstName, (String) sortedRecords[i].get('FirstName'));
+			System.assertEquals(actualRecords[i].Title, (String) sortedRecords[i].get('Title'));
+		}
+	}
+
+	@isTest static void buildCreatesOrderByClause() {
+		UTIL_OrderBy orderBy = new UTIL_OrderBy();
+		orderBy.add(new UTIL_OrderBy.Field(Contact.LastName, SORT_DESC));
+		orderBy.add(new UTIL_OrderBy.Field(Contact.FirstName, SORT_ASC, NULLS_LAST));
+		orderBy.add(new UTIL_OrderBy.Field(Contact.Title));
+
+		String orderByClause = orderBy.build();
+
+		String expectedOrderByClause;
+		Boolean expectedIsPostSort;
+		// if any field is encrypted, then order by clause should be empty and post sort should be applied
+		if (!Contact.LastName.getDescribe().isSortable() || !Contact.FirstName.getDescribe().isSortable() || !Contact.Title.getDescribe().isSortable()) {
+			expectedOrderByClause = '';
+			expectedIsPostSort = true;
+		} else {
+			expectedOrderByClause = 'LastName DESC, FirstName NULLS LAST, Title';
+			expectedIsPostSort = false;
+		}
+
+		System.assertEquals(expectedOrderByClause, orderByClause);
+		System.assertEquals(expectedIsPostSort, orderBy.isPostSort, 'isPostSort should be as expected');
+	}
+
+	@isTest static void buildCreatesEmptyOrderByClauseWhenFieldsAreNotProvided() {
+		UTIL_OrderBy orderBy = new UTIL_OrderBy();
+
+		String orderByClause = orderBy.build();
+		System.assertEquals('', orderByClause);
+	}
 
 
 
