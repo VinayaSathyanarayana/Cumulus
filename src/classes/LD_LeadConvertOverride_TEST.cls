@@ -120,8 +120,8 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account];
-            system.assertEquals(1,createdAccount2.size());
+            List<Account> createdAccount2 = new UTIL_Finder(Account.SObjectType).withWhereEquals(Account.Name, accountName).findAll();
+            system.assertEquals(1,createdAccount2.size(), createdAccount2);
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);
         } else if (CAO_Constants.isBucketModel()) {
@@ -789,7 +789,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account];
+            List<Account> createdAccount2 = new UTIL_Finder(Account.SObjectType).withWhereEquals(Account.Name, accountName).findAll();
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);
@@ -1011,7 +1011,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account];
+            List<Account> createdAccount2 = new UTIL_Finder(Account.SObjectType).withWhereEquals(Account.Name, accountName).findAll();
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);

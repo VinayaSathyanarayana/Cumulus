@@ -177,7 +177,7 @@ public with sharing class UTIL_Finder {
         }
 
         public override String toString() {
-            return String.valueOf(sObjField) + ' ' + operator + ' ' + value;
+            return String.valueOf(sObjField) + ' ' + operator + ' \'' + value + '\'';
         }
     }
 }
