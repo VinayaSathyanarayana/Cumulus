@@ -56,7 +56,7 @@ public with sharing class UTIL_Query {
     /** @description ORDER BY clauses used in the SOQL's ORDER BY segment */ 
     private String orderBy;
     /** @description LIMIT statement used in the SOQL's LIMIT segment */ 
-    private Integer maxRows;
+    private Integer limitRows;
     /** @description Indicates if toLabel() should be used on the Salutation field  */ 
     private Boolean isToLabelSalutation = false;
 
@@ -96,12 +96,12 @@ public with sharing class UTIL_Query {
     }
 
     /*********************************************************************************************************
-    * @description Registers LIMIT to Integer
-    * @param maxRows the maximum number of rows to return
+    * @description Registers LIMIT rows
+    * @param limitRows The maximum number of rows to return
     * @return UTIL_Query The instance of the Query builder
     */
-    public UTIL_Query withLimit(Integer maxRows) {
-        this.maxRows = maxRows;
+    public UTIL_Query withLimit(Integer limitRows) {
+        this.limitRows = limitRows;
         return this;
     }
 
@@ -175,7 +175,8 @@ public with sharing class UTIL_Query {
             'SELECT {0} FROM {1}{2}{3}{4}',
             new String[] {
                 String.join(uniqueSelectFields, ', '),
-                entity, buildWhereClause(),
+                entity, 
+                buildWhereClause(),
                 buildOrderByClause(),
                 buildLimitClause()
             }
@@ -255,10 +256,10 @@ public with sharing class UTIL_Query {
     * @return String The LIMIT clause
     */
     private String buildLimitClause() {
-        if (maxRows == null || maxRows < 1) {
+        if (limitRows == null || limitRows <= 0) {
             return '';
         }
 
-        return ' LIMIT ' + maxRows;
+        return ' LIMIT ' + limitRows;
     }
 }

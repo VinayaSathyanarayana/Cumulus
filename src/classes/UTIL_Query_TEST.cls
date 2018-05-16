@@ -43,7 +43,7 @@ private class UTIL_Query_TEST {
         The SOQL contains unique field names 
     **********************************************************************************************************/   
     private static testMethod void testSoqlDoesNotContainDuplicateSelectFields() {
-        String[] selectFields = new String[] {
+        String[] selectFields = new String[]{
             'Id', 'accountId', 'ACCOUNTid',
             'npo02__Household__r.Number_of_HOUSEHOLD_Members__c',
             'npo02__Household__r.NUMBER_of_Household_MEMBERS__C',
@@ -105,16 +105,16 @@ private class UTIL_Query_TEST {
         The SOQL contains WHERE Clause
     **********************************************************************************************************/   
     private static testMethod void testSoqlIsCorrectWhenWhereClauseIsProvided() {
-        Account[] accounts = new Account[] { 
+        Account[] accounts = new Account[]{ 
             new Account(Name = 'Test1'),
             new Account(Name = 'Test2'),
             new Account(Name = 'Test3')
         };
         insert accounts;
 
-        Account[] expectedAccounts = new Account[] { accounts[0], accounts[1] };
+        Account[] expectedAccounts = new Account[]{ accounts[0], accounts[1] };
 
-        String[] selectFields = new String[] { 'Id', 'Name' };
+        String[] selectFields = new String[]{ 'Id', 'Name' };
 
         String soql = new UTIL_Query()
             .withSelectFields(selectFields)
@@ -142,21 +142,21 @@ private class UTIL_Query_TEST {
         The SOQL contains WHERE Clause
     **********************************************************************************************************/
     private static testMethod void testSoqlIsCorrectWhenMultipleWhereClausesAreProvided() {
-        Account[] accounts = new Account[] { 
+        Account[] accounts = new Account[]{ 
             new Account(Name = 'Test1'),
             new Account(Name = 'Test2'),
             new Account(Name = 'Test3')
         };
         insert accounts;
 
-        String[] whereClauses = new String[] {
+        String[] whereClauses = new String[]{
             'Id IN :expectedAccounts',
             'Name LIKE Test%'
         };
 
-        Account[] expectedAccounts = new Account[] { accounts[0], accounts[1] };
+        Account[] expectedAccounts = new Account[]{ accounts[0], accounts[1] };
 
-        String[] selectFields = new String[] { 'Id', 'Name' };
+        String[] selectFields = new String[]{ 'Id', 'Name' };
 
         String soql = new UTIL_Query()
             .withSelectFields(selectFields)
@@ -176,16 +176,16 @@ private class UTIL_Query_TEST {
         The SOQL contains ORDER BY Clause
     **********************************************************************************************************/
     private static testMethod void testSoqlIsCorrectWhenOrderByClauseIsProvided() {
-        Account[] accounts = new Account[] { 
+        Account[] accounts = new Account[]{ 
             new Account(Name = 'Test1'),
             new Account(Name = 'Test2'),
             new Account(Name = 'Test3')
         };
         insert accounts;
 
-        Account[] expectedAccounts = new Account[] { accounts[0], accounts[1] };
+        Account[] expectedAccounts = new Account[]{ accounts[0], accounts[1] };
 
-        String[] selectFields = new String[] { 'Id', 'Name' };
+        String[] selectFields = new String[]{ 'Id', 'Name' };
 
         String soql = new UTIL_Query()
             .withSelectFields(selectFields)
@@ -205,16 +205,16 @@ private class UTIL_Query_TEST {
         The SOQL contains LIMIT Clause
     **********************************************************************************************************/
     private static testMethod void testSoqlIsCorrectWhenLimitClauseIsProvided() {
-        Account[] accounts = new Account[] { 
+        Account[] accounts = new Account[]{ 
             new Account(Name = 'Test1'),
             new Account(Name = 'Test2'),
             new Account(Name = 'Test3')
         };
         insert accounts;
 
-        Account[] expectedAccounts = new Account[] { accounts[0], accounts[1] };
+        Account[] expectedAccounts = new Account[]{ accounts[0], accounts[1] };
 
-        String[] selectFields = new String[] { 'Id', 'Name' };
+        String[] selectFields = new String[]{ 'Id', 'Name' };
 
         String soql = new UTIL_Query()
             .withSelectFields(selectFields)
@@ -254,10 +254,10 @@ private class UTIL_Query_TEST {
         The build() throws an exception
     **********************************************************************************************************/   
     private static testMethod void testSoqlBuildFailsWhenSelectFieldIsEmpty() {
-        for (String fieldName : new String[] { ' ', '', null}) {
+        for (String fieldName : new String[]{ ' ', '', null}) {
             try {
                 String soql = new UTIL_Query()
-                    .withSelectFields(new String[] { fieldName })
+                    .withSelectFields(new String[]{ fieldName })
                     .withFrom('Account')
                     .build();
 
@@ -275,7 +275,7 @@ private class UTIL_Query_TEST {
         The build() throws an exception
     **********************************************************************************************************/   
     private static testMethod void testSoqlBuildFailsWhenFromValueIsNotProvided() {
-        String[] selectFields = new String[] { 'Id', 'Name' };
+        String[] selectFields = new String[]{ 'Id', 'Name' };
 
         try {
             String soql = new UTIL_Query()
@@ -295,9 +295,9 @@ private class UTIL_Query_TEST {
         The build() succeeds and the empty WHERE clause is ignored
     **********************************************************************************************************/   
     private static testMethod void testSoqlBuildSucceedsWhenWhereClauseIsEmpty() {
-        String[] selectFields = new String[] { 'Id', 'Name' };
+        String[] selectFields = new String[]{ 'Id', 'Name' };
 
-        for (String whereClause : new String[] { ' ', '', null}) {
+        for (String whereClause : new String[]{ ' ', '', null}) {
             try {
                 String soql = new UTIL_Query()
                     .withSelectFields(selectFields)
@@ -320,7 +320,7 @@ private class UTIL_Query_TEST {
         The SOQL contains toLabel() for the Salutation field 
     **********************************************************************************************************/   
     private static testMethod void testSoqlIncludesToLabelSalutationWhenSettingsIsOn() {
-        String[] selectFields = new String[] {
+        String[] selectFields = new String[]{
             'Id', 'AccountId', 'SaLuTaTiOn', 'FirstName', 'LastName'
         };
 
@@ -342,7 +342,7 @@ private class UTIL_Query_TEST {
         The SOQL contains Salutation field without toLabel()
     **********************************************************************************************************/   
     private static testMethod void testSoqlExcludesToLabelSalutationWhenSettingsIsOff() {
-        String[] selectFields = new String[] {
+        String[] selectFields = new String[]{
             'Id', 'AccountId', 'SaLuTaTiOn', 'FirstName', 'LastName'
         };
 
