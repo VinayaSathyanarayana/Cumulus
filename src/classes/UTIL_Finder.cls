@@ -44,8 +44,9 @@ public with sharing class UTIL_Finder {
         }
         set;
     }
-    private String condition;
+    private List<FieldExpression> whereFilters;
     private UTIL_OrderBy orderBy;
+    private Integer limitRows;
 
     /*******************************************************************************************************************
     * @description UTIL_Finder constructor for the provided sObject Type
@@ -53,6 +54,7 @@ public with sharing class UTIL_Finder {
     public UTIL_Finder(sObjectType sObjType) {
         this.sObjType = sObjType;
         this.orderBy = new UTIL_OrderBy();
+        this.whereFilters = new List<FieldExpression>();
     }
 
     /*******************************************************************************************************************
@@ -73,6 +75,15 @@ public with sharing class UTIL_Finder {
         for (Schema.sObjectField sObjField : sObjFields) {
             selectFields.add(String.valueOf(sObjField));
         }
+
+        return this;
+    }
+
+    /*******************************************************************************************************************
+    * @description Returns UTIL_Finder with where condition
+    */
+    public UTIL_Finder withWhereEquals(Schema.sObjectField sObjField, String value) {
+        whereFilters.add(new FieldExpression(sObjField, '=', value));
 
         return this;
     }
@@ -105,6 +116,15 @@ public with sharing class UTIL_Finder {
     }
 
     /*******************************************************************************************************************
+    * @description Returns UTIL_Finder with passed in limit number
+    */
+    public UTIL_Finder withLimit(Integer limitRows) {
+        this.limitRows = limitRows;
+
+        return this;
+    }
+
+    /*******************************************************************************************************************
     * @description Returns all sObjects for this sObject Type
     */
     public List<sObject> findAll() {
@@ -117,7 +137,7 @@ public with sharing class UTIL_Finder {
     * @description Returns all sObjects for this sObject Type
     */
     public List<sObject> findByRelatedToIds(Schema.sObjectField referenceField, Set<Id> relatedToIds) {
-        condition = String.valueOf(referenceField) + ' IN :relatedToIds';
+        whereFilters.add(new FieldExpression(referenceField, 'IN', ':relatedToIds'));
         List<sObject> sObjects = Database.query(buildQuery());
 
         return orderBy.sort(sObjects);
@@ -127,11 +147,37 @@ public with sharing class UTIL_Finder {
         String query = new UTIL_Query()
                 .withFrom(sObjType)
                 .withSelectFields(selectFields)
-                .withWhere(condition)
+                .withWhere(buildWhere())
                 .withOrderBy(orderBy.build())
+                .withLimit(limitRows)
                 .build();
 
         return query;
     }
 
+    private String buildWhere() {
+        List<String> expressions = new List<String>();
+        for (FieldExpression field : whereFilters) {
+            expressions.add(field.toString());
+        }
+
+        return String.join(expressions, ' AND ');
+    }
+
+    public class FieldExpression {
+        Schema.sObjectField sObjField;
+        Schema.sObjectField referenceField;
+        String operator;
+        String value;
+
+        public FieldExpression(Schema.SObjectField sObjField, String operator, String value) {
+            this.sObjField = sObjField;
+            this.operator = operator;
+            this.value = value;
+        }
+
+        public override String toString() {
+            return String.valueOf(sObjField) + ' ' + operator + ' ' + value;
+        }
+    }
 }

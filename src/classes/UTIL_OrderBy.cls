@@ -241,7 +241,7 @@ public with sharing class UTIL_OrderBy {
         * @return Field The object instance 
         */
         public FieldExpression fromRelationship(Schema.sObjectField referenceField) {
-			this.referenceField = referenceField;
+            this.referenceField = referenceField;
 
             return this;
         }

@@ -274,7 +274,13 @@ public with sharing class LD_LeadConvertOverride_CTRL {
     public map<Id, Account> mapIdAccountMatches {
         get {
             if (mapIdAccountMatches == null) {
-                mapIdAccountMatches = new map<Id, Account>([select Id, Name, BillingCity from Account where name = :l.company limit 50]);
+                mapIdAccountMatches = new map<Id, Account>(
+                    (List<Account>) new UTIL_Finder(Account.sObjectType)
+                    .withSelectFields(new Set<Schema.SObjectField>{ Account.Id, Account.Name, Account.BillingCity })
+                    .withWhereEquals(Account.Name, l.Company)
+                    .withLimit(50)
+                    .findAll()
+                );
             }
             return mapIdAccountMatches;
         }
