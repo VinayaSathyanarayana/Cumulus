@@ -55,6 +55,8 @@ public with sharing class UTIL_Query {
     private String[] whereClauses = new String[0];
     /** @description ORDER BY clauses used in the SOQL's ORDER BY segment */ 
     private String orderBy;
+    /** @description LIMIT statement used in the SOQL's LIMIT segment */ 
+    private Integer maxRows;
     /** @description Indicates if toLabel() should be used on the Salutation field  */ 
     private Boolean isToLabelSalutation = false;
 
@@ -85,11 +87,21 @@ public with sharing class UTIL_Query {
 
     /*********************************************************************************************************
     * @description Registers ORDER BY Field
-    * @param fieldName Name of the field to order by
+    * @param orderBy the field expression to order by
     * @return UTIL_Query The instance of the Query builder
     */
     public UTIL_Query withOrderBy(String orderBy) {
-        this.orderBy = orderBy;            
+        this.orderBy = orderBy;
+        return this;
+    }
+
+    /*********************************************************************************************************
+    * @description Registers LIMIT to Integer
+    * @param maxRows the maximum number of rows to return
+    * @return UTIL_Query The instance of the Query builder
+    */
+    public UTIL_Query withLimit(Integer maxRows) {
+        this.maxRows = maxRows;
         return this;
     }
 
@@ -107,8 +119,8 @@ public with sharing class UTIL_Query {
     * @param sobjectType Type of the Sobject
     * @return UTIL_Query The instance of the Query builder
     */
-    public UTIL_Query withFrom(Schema.SObjectType sobjectType) {           
-        return withFrom(sobjectType.getDescribe().getName());
+    public UTIL_Query withFrom(Schema.SObjectType sObjectType) {           
+        return withFrom(String.valueOf(sObjectType));
     }
     
     /*********************************************************************************************************
@@ -160,8 +172,13 @@ public with sharing class UTIL_Query {
         }
 
         return String.format(
-            'SELECT {0} FROM {1} {2} {3}',
-            new String[] { String.join(uniqueSelectFields, ', '), entity, buildWhereClause(), buildOrderByClause()}
+            'SELECT {0} FROM {1}{2}{3}{4}',
+            new String[] {
+                String.join(uniqueSelectFields, ', '),
+                entity, buildWhereClause(),
+                buildOrderByClause(),
+                buildLimitClause()
+            }
         ).trim();
     }
 
@@ -218,7 +235,7 @@ public with sharing class UTIL_Query {
             soqlWhere += clause;
         }
         
-        return String.isBlank(soqlWhere) ? '' : 'WHERE ' + soqlWhere;
+        return String.isBlank(soqlWhere) ? '' : ' WHERE ' + soqlWhere;
     }
 
     /*********************************************************************************************************
@@ -231,5 +248,17 @@ public with sharing class UTIL_Query {
         }
 
         return ' ORDER BY ' + orderBy;
+    }
+
+    /*********************************************************************************************************
+    * @description Builds the LIMIT clause
+    * @return String The LIMIT clause
+    */
+    private String buildLimitClause() {
+        if (maxRows == null || maxRows < 1) {
+            return '';
+        }
+
+        return ' LIMIT ' + maxRows;
     }
 }

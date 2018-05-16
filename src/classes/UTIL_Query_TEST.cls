@@ -33,7 +33,7 @@
 * @group Utilities
 * @description Unit tests for UTIL_Query class
 */
-@isTest
+@isTest(isParallel=true)
 private class UTIL_Query_TEST {
 	
     /*********************************************************************************************************
@@ -62,12 +62,12 @@ private class UTIL_Query_TEST {
 
     /*********************************************************************************************************
     @description 
-        Tests SOQL builder when WHERE Clause is not provided
+        Tests SOQL builder when WHERE, ORDER BY and LIMIT Clauses are not provided
     verify:
         The SOQL contains SELECT fields and a FROM value
     **********************************************************************************************************/   
-    private static testMethod void testSoqlIsCorrectWhenWhereClauseIsNotProvided() {
-        String[] selectFields = new String[] { 'Id', 'Name' };
+    private static testMethod void testSoqlIsCorrectWhenOptionalClausesAreNotProvided() {
+        Set<String> selectFields = new Set<String> { 'Id', 'Name' };
 
         String soql = new UTIL_Query()
             .withSelectFields(selectFields)
@@ -77,6 +77,25 @@ private class UTIL_Query_TEST {
         String expectedSoql = 'SELECT Id, Name FROM Account';
 
         System.assertEquals(expectedSoql, soql, 'SOQL should be correct without WHERE clause');
+    }
+
+    /*********************************************************************************************************
+    @description 
+        Tests SOQL builder when FROM is sObjectType
+    verify:
+        The SOQL contains a FROM value
+    **********************************************************************************************************/   
+    private static testMethod void testSoqlIsCorrectWhenFromSObjectTypeIsProvided() {
+        Set<String> selectFields = new Set<String> { 'Id', 'Name' };
+
+        String soql = new UTIL_Query()
+            .withSelectFields(selectFields)
+            .withFrom(Account.getSObjectType())
+            .build();
+        
+        String expectedSoql = 'SELECT Id, Name FROM Account';
+
+        System.assertEquals(expectedSoql, soql, 'SOQL should be correct with FROM clause from sObjectType');
     }
 
     /*********************************************************************************************************
@@ -114,6 +133,100 @@ private class UTIL_Query_TEST {
 
         System.assertEquals(expectedAccountIds.size(), actualAccountIds.size(), 'Expected Accounts ' + expectedAccounts + ' should be the same as actual Accounts ' + actualAccounts);
         System.assert(expectedAccountIds.containsAll(actualAccountIds), 'Expected Accounts ' + expectedAccounts + ' should be the same as actual Accounts ' + actualAccounts);
+    }
+
+    /*********************************************************************************************************
+    @description 
+        Tests SOQL builder when multiple WHERE Clause are provided
+    verify:
+        The SOQL contains WHERE Clause
+    **********************************************************************************************************/
+    private static testMethod void testSoqlIsCorrectWhenMultipleWhereClausesAreProvided() {
+        Account[] accounts = new Account[] { 
+            new Account(Name = 'Test1'),
+            new Account(Name = 'Test2'),
+            new Account(Name = 'Test3')
+        };
+        insert accounts;
+
+        String[] whereClauses = new String[] {
+            'Id IN :expectedAccounts',
+            'Name LIKE Test%'
+        };
+
+        Account[] expectedAccounts = new Account[] { accounts[0], accounts[1] };
+
+        String[] selectFields = new String[] { 'Id', 'Name' };
+
+        String soql = new UTIL_Query()
+            .withSelectFields(selectFields)
+            .withFrom('Account')
+            .withWhere(whereClauses)
+            .build();
+        
+        String expectedSoql = 'SELECT Id, Name FROM Account WHERE Id IN :expectedAccounts AND Name LIKE Test%';
+
+        System.assertEquals(expectedSoql, soql, 'SOQL should include both WHERE clauses');
+    }
+
+    /*********************************************************************************************************
+    @description 
+        Tests SOQL builder when ORDER BY Clause is provided
+    verify:
+        The SOQL contains ORDER BY Clause
+    **********************************************************************************************************/
+    private static testMethod void testSoqlIsCorrectWhenOrderByClauseIsProvided() {
+        Account[] accounts = new Account[] { 
+            new Account(Name = 'Test1'),
+            new Account(Name = 'Test2'),
+            new Account(Name = 'Test3')
+        };
+        insert accounts;
+
+        Account[] expectedAccounts = new Account[] { accounts[0], accounts[1] };
+
+        String[] selectFields = new String[] { 'Id', 'Name' };
+
+        String soql = new UTIL_Query()
+            .withSelectFields(selectFields)
+            .withFrom('Account')
+            .withOrderBy('Id')
+            .build();
+        
+        String expectedSoql = 'SELECT Id, Name FROM Account ORDER BY Id';
+
+        System.assertEquals(expectedSoql, soql, 'SOQL should include ORDER BY clause');
+    }
+
+    /*********************************************************************************************************
+    @description 
+        Tests SOQL builder when LIMIT Clause is provided
+    verify:
+        The SOQL contains LIMIT Clause
+    **********************************************************************************************************/
+    private static testMethod void testSoqlIsCorrectWhenLimitClauseIsProvided() {
+        Account[] accounts = new Account[] { 
+            new Account(Name = 'Test1'),
+            new Account(Name = 'Test2'),
+            new Account(Name = 'Test3')
+        };
+        insert accounts;
+
+        Account[] expectedAccounts = new Account[] { accounts[0], accounts[1] };
+
+        String[] selectFields = new String[] { 'Id', 'Name' };
+
+        String soql = new UTIL_Query()
+            .withSelectFields(selectFields)
+            .withFrom('Account')
+            .withLimit(2)
+            .build();
+        
+        String expectedSoql = 'SELECT Id, Name FROM Account LIMIT 2';
+        Account[] actualAccounts = Database.query(soql);
+
+        System.assertEquals(expectedSoql, soql, 'SOQL should include ORDER BY clause');
+        System.assertEquals(2, actualAccounts.size());
     }
 
     /*********************************************************************************************************

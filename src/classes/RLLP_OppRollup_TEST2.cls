@@ -710,7 +710,7 @@ public with sharing class RLLP_OppRollup_TEST2 {
                 listAcc.add(new Account(name='Test Account' + string.valueOf(i), npe01__SYSTEMIsIndividual__c=false));
             }
             insert listAcc;
-            listAcc = [select Id, Name, npe01__SYSTEMIsIndividual__c from Account where Name like 'Test Account%'];
+            listAcc = [select Id, Name, npe01__SYSTEMIsIndividual__c from Account where Id IN : listAcc];
             system.assertEquals(cTest, listAcc.size());
             system.assertEquals(false, listAcc[0].npe01__SYSTEMIsIndividual__c);
             

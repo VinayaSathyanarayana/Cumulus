@@ -112,7 +112,7 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name from Contact where lastname = :leadLastName];
+        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name from Contact];
         //one contact should have been created
         system.assertEquals(1,convertedContacts.size());
         system.assertEquals(true,convertedContacts[0].Account.npe01__Systemisindividual__c);
@@ -120,7 +120,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account where name = :accountName];
+            List<Account> createdAccount2 = [select id from Account];
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);
@@ -201,8 +201,8 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c from Contact where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS];
-        lead[] unconvertedLeads = [select id, firstname, lastname from lead where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS and isconverted = false];
+        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c from Contact];
+        lead[] unconvertedLeads = [select id, firstname, lastname from lead where isconverted = false];
         //no lead still unconverted
         system.assertEquals(0,unconvertedLeads.size());
         //one contact should have been created
@@ -273,8 +273,8 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname, Account.npe01__Systemisindividual__c, Account.Name from Contact where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS];
-        lead[] unconvertedLeads = [select id, firstname, lastname from lead where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS and isconverted = false];
+        Contact[] convertedContacts = [select id, firstname, lastname, Account.npe01__Systemisindividual__c, Account.Name from Contact];
+        lead[] unconvertedLeads = [select id, firstname, lastname from lead where isconverted = false];
         //no lead still unconverted
         system.assertEquals(0,unconvertedLeads.size());
         //one contact should have been created
@@ -350,8 +350,8 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname, Account.npe01__Systemisindividual__c, Account.Name from Contact where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS];
-        lead[] unconvertedLeads = [select id, firstname, lastname from lead where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS and isconverted = false];
+        Contact[] convertedContacts = [select id, firstname, lastname, Account.npe01__Systemisindividual__c, Account.Name from Contact];
+        lead[] unconvertedLeads = [select id, firstname, lastname from lead where isconverted = false];
         //no lead still unconverted
         system.assertEquals(0,unconvertedLeads.size());
         //one contact should have been created
@@ -429,8 +429,8 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname, Account.npe01__Systemisindividual__c, Account.Name from Contact where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS];
-        lead[] unconvertedLeads = [select id, firstname, lastname from lead where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS and isconverted = false];
+        Contact[] convertedContacts = [select id, firstname, lastname, Account.npe01__Systemisindividual__c, Account.Name from Contact];
+        lead[] unconvertedLeads = [select id, firstname, lastname from lead where isconverted = false];
         //no lead still unconverted
         system.assertEquals(0,unconvertedLeads.size());
         //one contact should have been created
@@ -506,8 +506,8 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname, npo02__Household__c, Account.npe01__Systemisindividual__c from Contact where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS];
-        lead[] unconvertedLeads = [select id, firstname, lastname from lead where lastname = :CAO_Constants.CONTACT_LASTNAME_FOR_TESTS and isconverted = false];
+        Contact[] convertedContacts = [select id, firstname, lastname, npo02__Household__c, Account.npe01__Systemisindividual__c from Contact];
+        lead[] unconvertedLeads = [select id, firstname, lastname from lead where isconverted = false];
         //no lead still unconverted
         system.assertEquals(0,unconvertedLeads.size());
         //one contact should have been created
@@ -618,7 +618,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account where name = :accountName];
+            List<Account> createdAccount2 = [select id from Account];
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);
@@ -683,7 +683,7 @@ private class LD_LeadConvertOverride_TEST {
         Test.stopTest();
 
         Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name,
-            MailingStreet, MailingCity, MailingState, MailingPostalCode, Current_Address__c from Contact where lastname = :leadLastName];
+            MailingStreet, MailingCity, MailingState, MailingPostalCode, Current_Address__c from Contact];
         //one contact should have been created
         system.assertEquals(1,convertedContacts.size());
         system.assertEquals(true,convertedContacts[0].Account.npe01__Systemisindividual__c);
@@ -691,7 +691,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account where name = :accountName];
+            List<Account> createdAccount2 = [select id from Account];
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);
@@ -781,7 +781,7 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name from Contact where lastname = :leadLastName];
+        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name from Contact];
         //one contact should have been created
         system.assertEquals(1,convertedContacts.size());
         system.assertEquals(true,convertedContacts[0].Account.npe01__Systemisindividual__c);
@@ -789,7 +789,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account where name = :accountName];
+            List<Account> createdAccount2 = [select id from Account];
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);
@@ -895,7 +895,7 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name from Contact where lastname = :leadLastName];
+        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name from Contact];
         //one contact should have been created
         system.assertEquals(1,convertedContacts.size());
         system.assertEquals(true,convertedContacts[0].Account.npe01__Systemisindividual__c);
@@ -903,7 +903,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account where name = :accountName];
+            List<Account> createdAccount2 = [select id from Account WHERE Id != :con.AccountId];
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);
@@ -1001,7 +1001,7 @@ private class LD_LeadConvertOverride_TEST {
         }
         Test.stopTest();
 
-        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name, Primary_Affiliation__c, Primary_Affiliation__r.BillingStreet from Contact where lastname = :leadLastName];
+        Contact[] convertedContacts = [select id, firstname, lastname,Account.npe01__Systemisindividual__c, Account.Name, Primary_Affiliation__c, Primary_Affiliation__r.BillingStreet from Contact];
         //one contact should have been created
         system.assertEquals(1,convertedContacts.size());
         system.assertEquals(true,convertedContacts[0].Account.npe01__Systemisindividual__c);
@@ -1011,7 +1011,7 @@ private class LD_LeadConvertOverride_TEST {
         String accountName = convertedContacts[0].FirstName + ' ' + convertedContacts[0].lastname;
         if (CAO_Constants.isOneToOne()) {
             system.assertEquals(accountName, convertedContacts[0].Account.Name);
-            List<Account> createdAccount2 = [select id from Account where name = :accountName];
+            List<Account> createdAccount2 = [select id from Account];
             system.assertEquals(1,createdAccount2.size());
         } else if (CAO_Constants.isHHAccountModel()) {
             system.assertEquals(convertedContacts[0].lastname + ' Household', convertedContacts[0].Account.Name);

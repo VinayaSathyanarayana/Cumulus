@@ -1620,10 +1620,10 @@ public with sharing class ADDR_Addresses_TEST2 {
         Test.stopTest();
 
         // verify results
-        acc = [select Id, Name, BillingStreet from Account where Name like '%Testy%'];
+        con = [select Id, AccountId, Lastname, MailingStreet, Current_Address__c from Contact];
+        acc = [select Id, Name, BillingStreet from Account where Id = :con.AccountId];
         list<Address__c> listAddr = [select Id, Default_Address__c, MailingStreet__c from Address__c];
         system.assertEquals(1, listAddr.size());
-        con = [select Id, Lastname, MailingStreet, Current_Address__c from Contact];
         system.assertEquals('Testy', con.Lastname);
         system.assertEquals('123 abc', con.MailingStreet);
         system.assertEquals(listAddr[0].Id, con.Current_Address__c);
